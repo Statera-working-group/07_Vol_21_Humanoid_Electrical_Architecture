@@ -1,0 +1,199 @@
+**Volume 21. Humanoid Electrical Architecture**
+
+# Chapter 05. Arm Electrical Architecture
+
+## 05.01. Shoulder Module
+
+![](images/image1.png){width="7.268055555555556in" height="7.268055555555556in"}
+
+어깨 모듈(Shoulder Module)은 휴머노이드 몸통(Torso)과 팔(Arm)을 연결하는 핵심 전기적·전기기계적 인터페이스(Electrical and Electromechanical Interface)이다. 일반적인 산업용 로봇 관절과 달리, 제한된 공간에서 여러 회전 자유도(Degrees of Freedom)를 지원하면서 상당한 동적 하중(Dynamic Load)을 견뎌야 한다. 따라서 전기 아키텍처(Electrical Architecture)는 고출력 구동(High-Power Actuation), 정밀 센싱(Precise Sensing), 실시간 통신(Real-Time Communication), 보호(Protection), 로컬 진단(Local Diagnostics)을 하나의 통합 서브시스템(Integrated Subsystem)으로 결합한다.
+
+일반적인 휴머노이드 어깨는 어깨 피치(Shoulder Pitch), 롤(Roll), 요(Yaw)에 해당하는 움직임을 구현하기 위해 2개 또는 3개의 상호 협조된 회전축(Rotational Axis)을 사용한다. 각 축에는 모터(Motor), 감속 기구(Reduction Mechanism), 모터 드라이버(Motor Driver), 위치 엔코더(Position Encoder), 토크 센싱 인터페이스(Torque Sensing Interface), 온도 센싱(Temperature Sensing), 선택적 홀딩 브레이크(Holding Brake)가 포함될 수 있다. 어깨 움직임은 팔 궤적(Arm Trajectory), 균형(Balance), 전신 동역학(Whole-Body Dynamics)에 직접적인 영향을 주므로 각 축은 독립적인 관절이 아니라 협조된 다축 모듈(Multi-Axis Module)로 동작해야 한다.
+
+전력(Electrical Power)은 일반적으로 몸통 전력 분배 아키텍처(Torso Power Distribution Architecture)에서 전용 어깨 전력 분기(Shoulder Power Branch)를 통해 공급된다. 어깨 인터페이스는 여러 액추에이터(Actuator)가 동시에 가속될 때 필요한 충분한 전류를 전달하면서 허용 가능한 전압 강하(Voltage Drop)와 열적 여유(Thermal Margin)를 유지해야 한다. 로컬 벌크 커패시턴스(Local Bulk Capacitance)는 급격한 토크 변화로 발생하는 과도 버스 변동(Transient Bus Disturbance)을 줄일 수 있으며, 분기 보호(Branch Protection)는 한쪽 팔에서 발생한 전기적 고장을 다른 신체 서브시스템까지 불필요하게 정지시키지 않고 격리할 수 있도록 한다.
+
+모터 드라이브(Motor Drive)는 고전류 모터 상 배선(High-Current Motor Phase Wiring)과 전자기 간섭(Electromagnetic Interference)을 최소화하기 위해 어깨 액추에이터 가까이에 배치하는 것이 유리하지만, 전력 반도체(Power Semiconductor)와 모터에서 발생하는 열을 고려한 패키징(Packaging)이 필요하다. 통합형 드라이브(Integrated Drive)는 하네스 복잡도(Harness Complexity)와 커넥터 수를 줄일 수 있으며, 중앙집중형 드라이브(Centralized Drive)는 냉각과 유지보수를 단순화할 수 있다. 따라서 토폴로지(Topology)는 열 관리(Thermal Management), 질량 분포(Mass Distribution), EMC 성능, 정비성(Serviceability), 기계적 패키징 제약 사이의 절충을 통해 결정된다.
+
+위치 피드백(Position Feedback)은 어깨에서 발생한 오차가 전체 팔 운동학 체인(Arm Kinematic Chain)을 따라 전달되기 때문에 매우 중요하다. 절대형 관절 엔코더(Absolute Joint Encoder)는 전원을 인가한 직후 잠재적으로 위험한 원점 복귀 동작(Homing Motion)을 수행하지 않고도 관절 위치를 제공할 수 있어 특히 유용하다. 모터 측 증분형 또는 절대형 엔코더(Incremental or Absolute Encoder)는 정류(Commutation)와 고대역폭 서보 제어(High-Bandwidth Servo Control)를 추가로 지원할 수 있다. 중복 위치 정보(Redundant Position Information)는 엔코더 불일치, 변속기 고장(Transmission Fault), 비정상적인 기계적 변위를 감지하는 데 활용할 수 있다.
+
+토크 정보(Torque Information)는 또 하나의 중요한 피드백 채널(Feedback Channel)을 제공한다. 기계 아키텍처에 따라 토크는 모터 전류(Motor Current)로부터 추정하거나 스트레인 기반 센서(Strain-Based Sensor), 로드셀(Load Cell), 전용 관절 토크 센서(Joint Torque Sensor)를 통해 직접 측정할 수 있다. 직접 토크 센싱(Direct Torque Sensing)은 상호작용 제어(Interaction Control), 충돌 감지(Collision Detection), 임피던스 제어(Impedance Control), 조작 안전성(Manipulation Safety)을 향상시킨다. 로컬 제어기(Local Controller)는 명령 토크, 측정 토크, 모터 전류, 속도, 위치를 비교하여 비정상적인 접촉이나 액추에이터 성능 저하를 식별할 수 있다.
+
+어깨와 상위 제어 시스템(Higher-Level Control System) 사이의 통신은 결정론적 주기 제어(Deterministic Cyclic Control)와 우선순위가 낮은 진단 트래픽(Diagnostic Traffic)을 모두 지원해야 한다. 이더캣(EtherCAT)은 정밀하게 동기화된 다축 서보 네트워크(Multi-Axis Servo Network)에 적합하며, CAN FD는 시스템 아키텍처에 따라 강건한 제어, 구성(Configuration), 진단 통신을 제공할 수 있다. 어깨 노드(Shoulder Node)는 표준화된 관절 상태(Joint State), 명령 인터페이스(Command Interface), 고장 정보, 펌웨어 식별 정보(Firmware Identification), 온도, 전류, 전압, 누적 운전 통계(Accumulated Operating Statistics)를 제공해야 한다.
+
+여러 어깨 축이 동시에 움직이거나 팔 제어가 몸통, 머리, 다리, 인지 시스템(Perception System)과 협조될 때는 정밀한 동기화(Precise Synchronization)가 특히 중요하다. 따라서 관절 위치, 토크, 전류 측정값은 공통 시간 기준(Common Time Base)과 연계되어야 한다. 결정론적 통신(Deterministic Communication)과 동기화 샘플링(Synchronized Sampling)은 센서 피드백과 액추에이터 명령 사이의 위상 오차(Phase Error)를 줄여 카테시안 궤적 정확도(Cartesian Trajectory Accuracy), 임피던스 거동(Impedance Behavior), 전신 제어 안정성(Whole-Body Control Stability)을 향상시킨다.
+
+어깨 하네스(Shoulder Harness)는 반복적인 굽힘, 비틀림, 복합 회전 운동을 받으므로 케이블 라우팅(Cable Routing)은 정적인 몸통 배선과 근본적으로 다르다. 전력, 통신, 엔코더, 브레이크, 센서 회로는 최소 굽힘 반경(Minimum Bend Radius)이나 비틀림 한계(Torsional Limit)를 초과하지 않으면서 여러 가동축을 통과하거나 우회해야 한다. 충분한 운전 수명을 확보하려면 플렉스 대응 도체(Flex-Rated Conductor), 제어된 서비스 루프(Service Loop), 스트레인 릴리프(Strain Relief), 마모 보호(Abrasion Protection), 기계적으로 제한된 라우팅이 필요하다.
+
+커넥터 배치(Connector Placement)는 신뢰성(Reliability)과 모듈 교체성(Modular Replacement)을 동시에 지원해야 한다. 실용적인 아키텍처에서는 몸통-어깨 인터페이스(Torso-to-Shoulder Interface)를 내부 액추에이터 연결부와 분리하여 몸통 하네스를 건드리지 않고도 전체 팔 또는 어깨 어셈블리(Assembly)를 제거할 수 있도록 한다. 커넥터는 기계적 키잉(Mechanical Keying), 확실한 잠금 구조(Secure Locking), 적절한 전류 용량(Current Capacity), 필요한 경우 실드 연속성(Shielding Continuity), 오조립 방지 기능을 제공해야 한다. 또한 정비 접근성(Service Access)이 구조적 강성이나 운동 범위를 저해해서는 안 된다.
+
+어깨 액추에이터는 물체 들어 올리기, 운반, 조작, 외란(Disturbance)으로부터 자세를 회복하는 과정에서 높은 연속 및 피크 토크(Continuous and Peak Torque)를 경험할 수 있으므로 열 모니터링(Thermal Monitoring)이 필요하다. 온도 센서는 모터 권선(Motor Winding), 드라이버 전력단(Driver Power Stage), 로컬 전자장치(Local Electronics), 주요 구조부의 온도를 감시할 수 있다. 제어기는 정지 한계에 도달하기 전에 점진적 열 디레이팅(Thermal Derating)을 적용하여 중요한 자유도를 갑자기 상실하는 대신 팔 성능을 단계적으로 감소시킬 수 있다.
+
+기능 안전(Functional Safety)을 위해서는 고장이 발생했을 때 어깨가 예측 가능한 상태로 전환되어야 한다. 과전류(Overcurrent), 과전압(Overvoltage), 저전압(Undervoltage), 엔코더 불일치(Encoder Disagreement), 과도한 온도, 통신 타임아웃(Communication Timeout), 비정상 토크, 과속(Overspeed), 드라이버 고장 등을 로컬에서 감지해야 한다. 고장 심각도에 따라 토크 제한(Torque Limitation), 제어 감속(Controlled Deceleration), 브레이크 체결(Brake Engagement), 안전 토크 차단(Safe Torque Removal) 등의 대응을 수행할 수 있다. 고장 격리(Fault Containment)는 단일 어깨 고장이 신체 전체의 전력 또는 통신 네트워크로 전파되는 것을 방지해야 한다.
+
+비상 정지(Emergency Stop) 동작은 특히 주의해서 설계해야 한다. 단순히 모터 토크를 제거하면 하중을 지지하고 있던 팔이 중력에 의해 떨어질 수 있기 때문이다. 따라서 안전 응답(Safe Response)은 팔 자세, 액추에이터 변속 구조, 브레이크 설계, 저장된 기계적 에너지(Stored Mechanical Energy)에 따라 달라진다. 협조된 시퀀스(Coordinated Sequence)는 드라이브 토크를 차단하고 홀딩 메커니즘(Holding Mechanism)을 작동시키기 전에 제어 감속을 수행할 수 있다. 안전 설계는 전기적 격리뿐만 아니라 능동 어깨 제어 상실로 발생하는 기계적 결과도 함께 고려해야 한다.
+
+로컬 진단(Local Diagnostics)은 어깨를 단순한 액추에이터 집합에서 관측 가능한 지능형 모듈(Observable Intelligent Module)로 변화시킨다. 런타임 모니터링(Runtime Monitoring)은 상 전류(Phase Current), 버스 전류(Bus Current), 관절 위치, 토크, 온도, 통신 오류, 브레이크 동작, 드라이버 고장 이력을 추적할 수 있다. 마찰 증가, 운전 온도 상승, 엔코더 편차(Encoder Deviation), 전류-토크 관계(Current-to-Torque Relationship)의 변화와 같은 추세 정보는 성능 저하가 실제 운전 고장으로 발전하기 전에 예지 정비(Predictive Maintenance)를 수행하는 데 활용될 수 있다.
+
+어깨 제어기(Shoulder Controller)는 고속 관절 서보 제어(High-Rate Joint Servo Control)와 상위 수준 체화 지능(Embodied Intelligence) 사이의 경계를 형성한다. 인공지능(AI) 또는 전신 플래너(Whole-Body Planner)는 궤적, 자세, 힘, 조작 행동을 요청할 수 있지만, 결정론적 로컬 제어기(Deterministic Local Controller)가 이러한 요청을 제한된 액추에이터 명령(Bounded Actuator Command)으로 변환해야 한다. 이러한 분리는 가변 지연(Variable Latency)을 갖는 인지 및 AI 워크로드가 전력 전자장치(Power Electronics)를 직접 제어하는 것을 방지하면서 물리적 상호작용에 필요한 응답성을 유지한다.
+
+시스템 관점에서 어깨는 정의된 전력, 통신, 시간 동기화, 안전, 진단 인터페이스를 갖는 교체 가능한 구역형 메카트로닉 모듈(Zonal Mechatronic Module)로 취급해야 한다. 기계적 제약이 허용하는 범위에서 좌우 어깨 어셈블리가 전자장치, 펌웨어, 커넥터, 정비 절차를 공유하도록 표준화할 수 있다. 이러한 모듈화(Modularity)는 제조 복잡도를 줄이고 향후 새로운 세대의 액추에이터를 도입할 때 휴머노이드 전체 전기 아키텍처를 다시 설계하지 않고도 시스템을 발전시킬 수 있도록 한다.
+
+## 05.02. Upper Arm
+
+![](images/image2.png){width="7.268055555555556in" height="7.268055555555556in"}
+
+상완(Upper Arm)은 어깨 모듈(Shoulder Module)과 팔꿈치 모듈(Elbow Module) 사이의 구조적·전기적 연결부를 형성하며, 기계적 하중을 전달하는 동시에 전력(Power), 통신(Communication), 센싱(Sensing), 안전 회로(Safety Circuit)를 보호된 경로로 제공한다. 휴머노이드 로봇에서 이 부분은 단순한 수동 기계 링크(Passive Mechanical Link)로 취급할 수 없다. 상완의 질량, 배선 토폴로지(Wiring Topology), 열적 거동(Thermal Behavior), 정비 인터페이스(Service Interface)가 팔의 동역학(Arm Dynamics), 신뢰성(Reliability), 유지보수성(Maintainability)에 직접적인 영향을 미치기 때문이다.
+
+상완의 전기 아키텍처(Electrical Architecture)는 휴머노이드 전체에서 사용되는 분산 관절 모듈 개념(Distributed Joint-Module Concept)과 밀접하게 연결된다. 어깨에서 전달되는 전력과 통신은 상완 구조 내부에 배치된 전자장치를 지원하면서 팔꿈치, 손목, 손 방향으로 계속 전달되어야 한다. 이에 따라 상완은 기계적 부재(Mechanical Member), 케이블 라우팅 구역(Cable-Routing Zone), 전기적 상호연결 구간(Electrical Interconnection Segment)의 역할을 동시에 수행하는 계층적 분배 경로(Hierarchical Distribution Path)가 된다.
+
+전력 도체(Power Conductor)는 단순히 상완 자체의 부하만 고려하는 것이 아니라 하위 액추에이터가 동시에 요구하는 최대 전력 수요를 기준으로 선정해야 한다. 팔꿈치, 손목, 손의 동작은 상완 하네스(Upper-Arm Harness)를 통과하는 전류에 빠르게 변화하는 전류 프로파일(Current Profile)을 발생시킬 수 있다. 따라서 전력 경로를 정의할 때 도체 저항(Conductor Resistance), 커넥터 접점 저항(Contact Resistance), 허용 전압 강하(Allowable Voltage Drop), 과도 전류(Transient Current), 주변 온도(Ambient Temperature), 번들 디레이팅(Bundle Derating)을 함께 고려해야 한다.
+
+실용적인 설계에서는 고전류 액추에이터 전력(High-Current Actuator Power)과 저전압 전자장치(Low-Voltage Electronics) 및 민감한 센서 회로(Sensitive Sensor Circuit)를 분리한다. 물리적 분리(Physical Separation), 제어된 배선 라우팅(Controlled Routing), 트위스티드 페어(Twisted Pair), 차폐(Shielding), 적절한 접지(Grounding)는 모터 스위칭 에지(Motor Switching Edge)에서 발생하는 신호 결합(Coupling)을 엔코더 및 통신 신호로 전달하는 것을 줄인다. 사용 가능한 단면적이 제한된 경우 하네스 형상(Harness Geometry)은 단순한 패키징 문제가 아니라 전자기 적합성(EMC) 전략의 일부가 된다.
+
+상완을 통과하는 통신은 일반적으로 어깨 측 제어기(Shoulder-Side Controller) 또는 네트워크 분기(Network Branch)를 팔꿈치 및 팔의 말단 모듈(Distal Arm Module)과 연결한다. 이더캣(EtherCAT)은 동기화된 서보 제어(Synchronized Servo Control)를 위한 결정론적 고속 통신(Deterministic High-Rate Communication)을 제공할 수 있으며, CAN FD는 강건한 제어(Control), 진단(Diagnostics), 구성(Configuration), 보조 장치(Secondary Device)를 지원할 수 있다. 각 게이트웨이는 추가적인 복잡성, 지연시간(Latency), 진단 상태(Diagnostic State), 잠재적인 고장 모드(Failure Mode)를 발생시키므로 아키텍처에서는 불필요한 네트워크 변환을 최소화해야 한다.
+
+상완 하네스는 주로 어깨와 팔꿈치 경계에서 발생하는 반복적인 움직임을 견뎌야 한다. 중앙 구간은 관절 자체보다 작은 각도의 움직임을 경험할 수 있지만, 대형 팔 궤적(Arm Trajectory)에서는 케이블이 여전히 굽힘(Bending), 비틀림(Torsion), 진동(Vibration), 축방향 이동(Axial Movement)을 경험할 수 있다. 따라서 로봇의 운전 수명(Operating Life) 동안 피로 고장(Fatigue Failure)을 방지하기 위해 플렉스 대응 배선(Flex-Rated Wiring), 스트레인 릴리프(Strain Relief), 제어된 서비스 루프(Controlled Service Loop), 내마모 슬리브(Abrasion-Resistant Sleeve), 정의된 클램프 위치(Clamp Location)가 필요하다.
+
+어깨 근처의 라우팅(Routing)은 다축 어깨 회전(Multi-Axis Shoulder Rotation)이 전체 팔 하네스를 비틀 수 있기 때문에 특히 주의해야 한다. 하네스는 커넥터 또는 케이블 출구(Cable Exit)에 굽힘이 집중되지 않도록 기계적으로 제어된 전이 구간(Mechanically Controlled Transition)을 통해 상완으로 진입해야 한다. 기계적 스토퍼(Mechanical Hard Stop), 라우팅 가이드(Routing Guide), 정의된 비틀림 구간(Torsional Section)을 사용하면 취약한 종단부(Termination)에 움직임이 집중되는 대신 의도된 케이블 길이 전체에 걸쳐 움직임을 분산시킬 수 있다.
+
+팔꿈치 측에서는 하네스가 상대적으로 강성이 높은 상완 구조에서 또 다른 고동적 관절 영역으로 전환되어야 한다. 커넥터 방향(Connector Orientation)과 케이블 출구 방향(Cable Exit Direction)은 팔꿈치 회전 범위(Elbow Rotation Envelope)에 맞추어 선정해야 하며, 하네스가 관절 움직임을 방해하거나 구조 부품 사이에 끼이지 않도록 해야 한다. 따라서 전기 설계는 팔의 전체 3차원 운동학적 범위(Three-Dimensional Kinematic Envelope)를 기준으로 검증해야 한다.
+
+상완 구조는 로컬 전자 모듈(Local Electronic Module), 센서(Sensor), 중간 전력 분배 부품(Intermediate Distribution Component)을 장착하기 위한 위치를 제공할 수도 있다. 이러한 장치는 지지되지 않은 케이블 길이(Unsupported Cable Length)를 최소화하면서 과도한 열 노출(Thermal Exposure)과 기계적 스트레스를 피할 수 있는 위치에 배치해야 한다. 분산 전자장치(Distributed Electronics)는 배선 복잡도를 줄일 수 있지만 추가 모듈은 질량과 관성(Inertia)을 증가시킨다. 상완 질량은 어깨가 지지해야 하므로 상대적으로 작은 전기 부품도 액추에이터 용량(Actuator Sizing)과 에너지 소비(Energy Consumption)에 영향을 줄 수 있다.
+
+열 거동(Thermal Behavior)은 전기적 수준과 기계적 수준 모두에서 고려해야 한다. 어깨 또는 팔꿈치 액추에이터에서 발생한 열은 상완 구조로 전도될 수 있으며, 도체 번들(Conductor Bundle)을 흐르는 전류와 커넥터에서도 추가적인 손실이 발생한다. 주요 위치에 배치된 온도 센서(Temperature Sensor)는 열 디레이팅(Thermal Derating), 고장 감지(Fault Detection), 수명 추정(Lifetime Estimation)에 필요한 정보를 제공할 수 있다. 상완 커버가 자연 냉각(Natural Cooling)을 제한하는 경우 환기(Ventilation) 또는 열전도 경로(Conduction Path)가 필요할 수 있다.
+
+상완에 내장된 센서는 기존의 관절 피드백(Joint Feedback)을 넘어 시스템 관측성(System Observability)을 향상시킬 수 있다. 휴머노이드 아키텍처에 따라 관성 센서(Inertial Sensor), 온도 센서, 구조 변형 센서(Structural Strain Sensor), 분산 촉각 소자(Distributed Tactile Element) 등을 링크 내부에 통합할 수 있다. 이러한 측정값은 어깨 및 팔꿈치 위치, 토크, 모터 전류 정보와 연계될 경우 충돌 감지(Collision Detection), 구조 하중 추정(Structural Load Estimation), 진동 모니터링(Vibration Monitoring), 보정(Calibration), 진단 기능(Diagnostic Function)을 지원할 수 있다.
+
+전기적 보호(Electrical Protection)는 하위 영역에서 발생한 고장이 전체 팔 하네스 또는 몸통 전력 시스템을 손상시키지 않도록 해야 한다. 보호 아키텍처에는 시스템 요구사항에 따라 분기 전류 모니터링(Branch Current Monitoring), 퓨징(Fusing), 전자식 회로 보호(Electronic Circuit Protection), 역극성 보호(Reverse-Polarity Protection), 제어식 전원 스위칭(Controlled Power Switching) 등이 포함될 수 있다. 고장 위치 추적(Fault Localization)은 어깨, 상완 배선, 팔꿈치, 손목, 손의 고장을 구분할 수 있어야 하며, 이를 통해 정비 인력이 영향을 받은 교체 가능 모듈(Replaceable Module)을 효율적으로 식별할 수 있다.
+
+상완을 통과하는 접지 및 차폐 연속성(Grounding and Shielding Continuity)은 여러 가동 인터페이스(Moving Interface)와 분리 가능한 커넥터(Detachable Connector)를 포함하기 때문에 매우 중요하다. 차폐 종단 전략(Shield Termination Strategy)은 의도하지 않은 접지 루프(Ground Loop)를 생성하지 않으면서 제어된 귀환 경로(Return Path)를 유지해야 한다. 금속 구조 부품(Structural Metal Component)이 섀시 본딩(Chassis Bonding)에 기여할 수 있지만, 본딩 표면(Bonding Surface), 체결부(Fastener), 코팅(Coating), 부식 거동(Corrosion Behavior), 조립 공정(Assembly Process)을 명시적으로 설계하지 않는 한 안정적인 전기적 연속성을 제공한다고 가정해서는 안 된다.
+
+정비성(Serviceability)은 커넥터와 하네스 아키텍처에 큰 영향을 미친다. 상완은 가능하면 전선을 절단하거나 영구 스플라이스(Permanent Splice)를 개방하거나 다른 신체 부위를 분해하지 않고도 제거할 수 있도록 설계해야 한다. 명확하게 정의된 어깨 측 및 팔꿈치 측 전기 인터페이스(Electrical Interface)는 상완 어셈블리(Upper-Arm Assembly)를 하나의 교체 가능한 유닛으로 만들 수 있도록 한다. 커넥터 키잉(Connector Keying), 라벨링(Labeling), 잠금 메커니즘(Locking Mechanism), 접근 가능한 배치는 조립 오류(Assembly Error)를 줄이고 현장 교체 및 생산 정비 시간을 단축한다.
+
+진단(Diagnostics)은 상완 전기 경로의 무결성(Integrity)을 지속적으로 평가해야 한다. 통신 오류 카운터(Communication Error Counter), 공급 전압(Supply Voltage), 분기 전류(Branch Current), 온도, 센서 유효성(Sensor Validity), 하위 노드 가용성(Downstream Node Availability)은 하네스 및 커넥터 상태에 대한 정보를 제공한다. 특정 팔 자세에서 반복적으로 발생하는 간헐적 통신 오류(Intermittent Communication Error)는 케이블 피로(Cable Fatigue) 또는 커넥터 문제를 나타낼 수 있으며, 부하 상태에서 증가하는 전압 강하는 접점 열화(Contact Degradation)가 완전한 전기적 고장으로 발전하기 전에 이를 나타낼 수 있다.
+
+상완을 통과하는 안전 관련 회로(Safety-Related Circuit)는 추가적인 설계 규율(Design Discipline)이 필요하다. 비상 정지 경로(Emergency-Stop Path), 안전 토크 제어 신호(Safe Torque Control Signal), 이중화 통신 채널(Redundant Communication Channel), 브레이크 제어 회로(Brake-Control Circuit)는 안전 개념(Safety Concept)에서 분리가 요구되는 경우 단일 고장점(Single Point of Failure)을 공유해서는 안 된다. 상완 하네스의 기계적 손상도 고려해야 한다. 그렇지 않으면 하나의 눌리거나 절단된 케이블 번들이 여러 액추에이터와 피드백 채널에 동시에 영향을 줄 수 있다.
+
+상완은 또한 실시간 모션 제어(Real-Time Motion Control)와 말단 조작 기능(Distal Manipulation Function) 사이의 중요한 인터페이스 역할을 한다. 전신 제어(Whole-Body Control) 또는 체화 인공지능(Embodied AI) 시스템에서 생성된 명령은 최종적으로 결정론적 관절 제어기(Deterministic Joint Controller)를 통해 전달되며, 팔꿈치, 손목, 손에서 발생하는 상태 정보(State Information)는 동일한 물리적 영역을 통해 반환된다. 따라서 협조된 도달 동작(Coordinated Reaching), 조작(Manipulation), 힘 제어(Force Control), 인간 상호작용(Human Interaction)을 안정적으로 수행하려면 충분한 통신 대역폭과 예측 가능한 타이밍(Predictable Timing)이 필요하다.
+
+모듈형 아키텍처(Modular Architecture)의 관점에서 상완은 두 관절 사이를 연결하는 맞춤형 배선으로 설계하기보다는 정의된 입력 및 출력 인터페이스(Input and Output Interface)를 갖는 표준화된 전기 구역(Standardized Electrical Zone)으로 설계해야 한다. 표준 도체 할당(Standard Conductor Assignment), 네트워크 인터페이스(Network Interface), 커넥터 제품군(Connector Family), 진단 식별자(Diagnostic Identifier), 접지 규칙(Grounding Rule), 정비 절차(Service Procedure)를 표준화하면 좌우 팔의 공통성(Left-Right Arm Commonality)과 제조성을 향상시킬 수 있다. 이러한 접근 방식은 향후 팔꿈치, 손목, 손 모듈이 발전하더라도 휴머노이드 팔 전체의 전기 시스템을 다시 설계하지 않고 각 모듈을 발전시킬 수 있도록 한다.
+
+## 05.03. Elbow Module
+
+![](images/image3.png){width="7.268055555555556in" height="7.268055555555556in"}
+
+팔꿈치 모듈(Elbow Module)은 상완(Upper Arm)과 전완(Forearm) 사이의 주요 회전 인터페이스(Rotational Interface)를 제공하며, 휴머노이드 팔을 통해 기계적 하중(Mechanical Load)을 전달하면서 제어된 굴곡(Flexion)과 신전(Extension)을 가능하게 한다. 전기 아키텍처(Electrical Architecture)는 소형이면서 매우 동적인 관절 내부에 액추에이터(Actuator), 모터 드라이버(Motor Driver), 위치 피드백(Position Feedback), 토크 센싱(Torque Sensing), 열 모니터링(Thermal Monitoring), 통신(Communication), 안전 기능(Safety Function)을 통합해야 한다. 팔꿈치 움직임은 손목과 손의 위치에 직접적인 영향을 주므로 전기적 성능은 정밀하고 반복 가능한 관절 제어(Joint Control)를 지원해야 한다.
+
+팔꿈치 액추에이터(Elbow Actuator)는 일반적으로 고토크 모터(High-Torque Motor), 감속 기구(Reduction Mechanism), 모터 드라이버(Motor Driver), 엔코더(Encoder), 관련 센싱 소자(Sensing Element)로 구성된다. 모터는 전기 에너지(Electrical Power)를 회전 운동(Rotational Motion)으로 변환하며, 감속 기구는 조작(Manipulation)과 하중 처리(Load Handling)에 필요한 토크 증폭(Torque Multiplication)을 제공한다. 기계적 전달계(Mechanical Transmission)는 전기 제어 시스템(Electrical Control System)과 적절하게 연계되어 전체 팔꿈치 운전 범위에서 명령 위치(Commanded Position), 속도(Velocity), 토크(Torque)가 예측 가능하게 유지되도록 해야 한다.
+
+전력(Electrical Power)은 상완 하네스(Upper-Arm Harness)를 통해 공급되며 팔꿈치 모터 드라이버와 관련 전자장치로 분배된다. 전력 경로(Power Path)는 급격한 가속, 감속, 고부하 조작 과정에서 발생하는 피크 전류(Peak Current)를 수용하면서 허용 가능한 전압 강하(Voltage Drop)와 열적 여유(Thermal Margin)를 유지해야 한다. 로컬 에너지 저장(Local Energy Storage)과 필터링(Filtering)은 주 전원 버스(Main Bus)의 과도 외란(Transient Disturbance)을 줄일 수 있으며, 분기 보호(Branch Protection)는 팔꿈치 고장을 격리하여 손목, 손 또는 다른 휴머노이드 서브시스템의 전력을 불필요하게 차단하지 않도록 해야 한다.
+
+모터 드라이버(Motor Driver)는 전기 명령(Electrical Command)과 모터 상전류(Motor Phase Current) 사이의 실시간 변환을 수행한다. 액추에이터 근처에 로컬 드라이버(Local Driver)를 배치하면 고전류 배선 길이를 줄이고 제어 응답성(Control Responsiveness)을 향상시키는 동시에 전류, 전압, 온도 정보를 로컬에서 모니터링할 수 있다. 드라이버는 제어된 토크 생성(Controlled Torque Generation), 전류 제한(Current Limiting), 과전압 및 저전압 보호(Overvoltage and Undervoltage Protection), 열 디레이팅(Thermal Derating), 신속한 고장 대응(Rapid Fault Response)을 지원하여 비정상적인 전기 조건이 기계적 불안정성(Mechanical Instability)으로 확대되지 않도록 해야 한다.
+
+위치 센싱(Position Sensing)은 팔꿈치 제어에서 핵심적인 기능이다. 작은 각도 오차도 손목과 말단 작동기(End Effector)에서 상당한 위치 변위를 발생시킬 수 있기 때문이다. 절대형 엔코더(Absolute Encoder)는 전원 인가 직후 관절 위치를 제공할 수 있으며, 추가적인 모터 측 엔코더(Motor-Side Encoder)는 정류(Commutation)와 고대역폭 서보 제어(High-Bandwidth Servo Control)를 지원할 수 있다. 엔코더 상태(Encoder Health)는 신호 유효성(Signal Validity), 위치 일관성(Position Consistency), 속도 타당성(Velocity Plausibility), 통신 상태(Communication Status)를 통해 지속적으로 평가하여 센서 성능 저하 또는 기계적 전달계 이상을 식별해야 한다.
+
+토크 피드백(Torque Feedback)은 팔꿈치 제어와 안전을 위한 추가적인 계층을 제공한다. 토크는 모터 전류(Motor Current)로부터 추정하거나 변속기 내부에 배치된 전용 토크 센서(Dedicated Torque Sensor)를 통해 측정할 수 있다. 직접 토크 측정(Direct Torque Measurement)은 임피던스 제어(Impedance Control), 힘 상호작용(Force Interaction), 충돌 감지(Collision Detection), 조작 정확도(Manipulation Accuracy)를 향상시킬 수 있다. 로컬 제어기(Local Controller)는 명령 토크와 측정 또는 추정 토크, 모터 전류를 비교하여 예상하지 못한 하중, 기계적 저항 또는 비정상적인 접촉을 감지할 수 있다.
+
+팔꿈치 통신 인터페이스(Elbow Communication Interface)는 로컬 관절 제어기(Local Joint Controller)를 상완, 손목 및 상위 제어 아키텍처(Higher-Level Control Architecture)와 연결한다. 이더캣(EtherCAT)은 협조된 서보 제어(Coordinated Servo Control)를 위한 결정론적 주기 통신(Deterministic Cyclic Communication)을 제공할 수 있으며, CAN FD는 구성(Configuration), 진단(Diagnostics), 저대역폭 제어(Lower-Bandwidth Control) 기능을 위한 강건한 대안 또는 보완 네트워크로 사용할 수 있다. 통신 인터페이스는 일관된 데이터 모델(Data Model)을 통해 관절 위치, 속도, 토크, 전류, 온도, 고장 상태(Fault Status), 운전 정보를 제공해야 한다.
+
+타이밍 일관성(Timing Consistency)은 팔꿈치 움직임이 어깨, 손목, 손 및 전신 제어기(Whole-Body Controller)와 협조되어야 하기 때문에 중요하다. 따라서 센서 샘플링(Sensor Sampling)과 액추에이터 명령(Actuator Command)은 정의된 시간 기준(Time Base)과 결정론적 통신 주기(Deterministic Communication Cycle)를 사용해야 한다. 동기화(Synchronization)는 명령과 피드백 신호 사이의 위상 차이(Phase Difference)를 줄이고 궤적 추종(Trajectory Tracking), 임피던스 거동(Impedance Behavior), 협조된 조작(Coordinated Manipulation)을 향상시킨다. 여러 관절이 동시에 작동하는 경우 타이밍 오류는 불필요한 진동이나 말단 작동기 위치 오차로 나타날 수 있다.
+
+팔꿈치 하네스(Elbow Harness)는 로봇의 수명 동안 반복적인 각도 운동과 기계적 진동(Mechanical Vibration)을 견뎌야 한다. 팔꿈치 관절로 진입하는 케이블은 굽힘, 비틀림, 마찰, 반복적인 주기 운동에 노출되므로 라우팅(Routing)과 스트레인 릴리프(Strain Relief)가 핵심적인 신뢰성 요소가 된다. 플렉스 대응 도체(Flex-Rated Conductor), 제어된 서비스 루프(Controlled Service Loop), 보호된 케이블 통로(Protected Cable Passage), 적절한 굽힘 반경(Bend Radius), 기계적으로 고정된 종단 지점(Termination Point)을 사용하여 움직임이 커넥터나 납땜 접합부(Soldered Joint)에 집중되지 않고 하네스 전체에 분산되도록 해야 한다.
+
+커넥터 아키텍처(Connector Architecture)는 상완 또는 손목을 불필요하게 분해하지 않고도 팔꿈치 모듈을 전기적으로 분리하고 교체할 수 있도록 해야 한다. 전력, 통신, 엔코더, 토크 센서, 브레이크(Brake), 보조 센서 연결부는 적절한 정격을 갖는 커넥터를 사용하고 기계적 키잉(Mechanical Keying)과 확실한 잠금 기능(Secure Locking)을 제공해야 한다. 커넥터 배치는 전체 팔꿈치 운동 범위(Elbow Motion Envelope)를 고려해야 하며, 최대 굴곡과 신전 과정에서 케이블이나 커넥터가 끼이거나 늘어나거나 과도하게 굽혀지지 않도록 해야 한다.
+
+열 관리(Thermal Management)는 팔꿈치 액추에이터가 들어 올리기와 조작 과정에서 높은 연속 토크(Continuous Torque)를 경험할 수 있기 때문에 필요하다. 열은 모터 권선(Motor Winding), 감속 부품(Reduction Component), 드라이버 전력단(Driver Power Stage), 전기 연결부(Electrical Connection)에서 발생할 수 있다. 따라서 온도 모니터링은 주요 열원(Critical Thermal Source)을 대상으로 수행하고 열 한계(Thermal Limit)에 도달하기 전에 점진적인 토크 디레이팅(Torque Derating)을 수행할 수 있는 정보를 제공해야 한다. 필요한 경우 기계 하우징(Mechanical Housing)을 열전도 경로(Heat Conduction Path)로 활용하여 액추에이터와 드라이버에서 발생하는 손실 열을 제어된 냉각 표면(Cooling Surface)으로 전달할 수도 있다.
+
+기능 안전(Functional Safety)을 위해서는 전기적, 센싱, 통신 및 기계적 고장에 대해 팔꿈치가 예측 가능한 방식으로 대응해야 한다. 관련 조건에는 과전류(Overcurrent), 과전압(Overvoltage), 저전압(Undervoltage), 과도한 온도, 엔코더 불일치(Encoder Disagreement), 토크 편차(Torque Deviation), 과속(Overspeed), 통신 타임아웃(Communication Timeout), 모터 드라이버 고장(Motor-Driver Failure) 등이 포함된다. 고장의 심각도에 따라 제어기는 토크를 감소시키거나 제어 감속(Controlled Deceleration)을 수행하고, 드라이브를 비활성화하거나 홀딩 브레이크(Holding Brake)를 작동시킬 수 있다. 고장 격리(Fault Containment)는 하나의 팔꿈치 고장이 팔의 다른 기능이나 신체 기능 전체를 비활성화하지 않도록 해야 한다.
+
+비상 정지(Emergency Stop) 동작에서는 팔꿈치에서 능동 토크(Active Torque)를 제거할 때 발생하는 물리적 결과를 고려해야 한다. 전완이 하중을 운반하고 있다면 갑작스러운 토크 제거로 인해 팔이 중력 또는 저장된 기계적 에너지(Stored Mechanical Energy)에 의해 움직일 수 있다. 따라서 안전 전략(Safety Stra
+
+## 05.04. Wrist Module
+
+![](images/image4.png){width="7.268055555555556in" height="7.268055555555556in"}
+
+손목 모듈(Wrist Module)은 전완(Forearm)과 엔드 이펙터 인터페이스(End-Effector Interface) 사이의 최종 다축 관절 연결부(Multi-Axis Articulation)를 제공하며, 손(Hand) 또는 장착된 도구(Tool)의 정밀한 방향과 위치 제어를 가능하게 한다. 손목 움직임은 조작(Manipulation) 과정에서 물체의 방향을 직접 결정하기 때문에 전기 아키텍처(Electrical Architecture)는 고해상도 위치 피드백(High-Resolution Position Feedback), 제어된 토크(Controlled Torque), 결정론적 통신(Deterministic Communication), 소형 전력 분배(Compact Power Distribution), 강건한 안전 기능(Robust Safety Function)을 제공해야 한다. 이러한 기능은 질량과 관성(Inertia)이 팔 성능에 큰 영향을 미치는 제한된 기계적 공간 안에서 구현되어야 한다.
+
+일반적인 휴머노이드 손목은 필요한 손재주(Dexterity)와 기계적 구성에 따라 손목 피치(Wrist Pitch), 요(Yaw), 롤(Roll)에 해당하는 2개 또는 3개의 회전축(Rotational Axis)을 통합할 수 있다. 각 축에는 소형 액추에이터(Compact Actuator), 감속 기구(Reduction Mechanism), 모터 드라이버(Motor Driver), 엔코더(Encoder), 토크 센싱 소자(Torque Sensing Element), 온도 센서(Temperature Sensor)가 포함될 수 있다. 전기 아키텍처는 이러한 축을 하나의 로컬 서브시스템(Local Subsystem)으로 협조 제어하면서 각 액추에이터에 대한 독립적인 모니터링과 고장 감지(Fault Detection)를 유지해야 한다. 이를 통해 개별 관절 수준의 고장 격리(Fault Containment)를 유지하면서 협조된 방향 제어(Coordinated Orientation Control)를 수행할 수 있다.
+
+전력(Electrical Power)은 전완 전기 인터페이스(Forearm Electrical Interface)에서 공급되며 손목 액추에이터와 로컬 전자장치(Local Electronics)로 분배된다. 손목 액추에이터는 일반적으로 어깨나 팔꿈치 액추에이터보다 작기 때문에 필요한 전력은 낮을 수 있지만, 급격한 토크와 속도 변화는 여전히 상당한 과도 전류(Current Transient)를 발생시킬 수 있다. 따라서 로컬 전력 경로(Local Power Path)는 적절한 필터링(Filtering), 분기 보호(Branch Protection), 전류 모니터링(Current Monitoring), 전압 감시(Voltage Supervision)를 포함해야 한다. 보호 기능은 고장 난 손목 액추에이터가 전기적 고장을 전완 또는 엔드 이펙터 시스템으로 전파하는 것을 방지해야 한다.
+
+모터 드라이버(Motor Driver)는 패키징과 열 제약(Thermal Constraint)이 허용하는 경우 손목 액추에이터 가까이에 배치해야 한다. 짧은 모터 상 연결(Motor-Phase Connection)은 저항 손실(Resistive Loss), 전자기 방출(Electromagnetic Emission), 하네스 복잡도(Harness Complexity)를 줄이는 동시에 로컬 서보 루프(Local Servo Loop)의 응답성을 향상시킨다. 드라이버는 전류 제어(Current Control), 토크 제어(Torque Control), 과전류 보호(Overcurrent Protection), 열 모니터링(Thermal Monitoring), 전압 감시(Voltage Supervision), 제어된 종료(Controlled Shutdown)를 지원해야 한다. 여러 손목 축이 하나의 소형 전자장치 영역을 공유하는 경우에는 고부하 동시 운전 중 드라이버 사이의 열적 결합(Thermal Coupling)도 고려해야 한다.
+
+고해상도 위치 피드백(High-Resolution Position Feedback)은 손목에서 특히 중요하다. 작은 각도 오차도 엔드 이펙터에서 큰 방향 오차(Orientation Error)를 발생시킬 수 있기 때문이다. 절대형 엔코더(Absolute Encoder)는 전원 인가 직후 관절 위치를 제공할 수 있으며, 모터 측 피드백(Motor-Side Feedback)은 정류(Commutation)와 고대역폭 서보 제어(High-Bandwidth Servo Control)를 지원할 수 있다. 엔코더 신호는 유효성(Validity), 일관성(Consistency), 예상하지 못한 불연속(Unexpected Discontinuity), 통신 오류(Communication Error)를 지속적으로 확인해야 한다. 안전 또는 정밀도 요구사항이 이를 정당화하는 경우, 이중화 위치 정보(Redundant Position Information)를 사용하여 센서 불일치와 비정상적인 기계적 전달계 동작을 감지할 수 있다.
+
+토크 센싱(Torque Sensing)은 손목에 추가적인 상호작용 인지 계층(Interaction Awareness Layer)을 제공한다. 토크는 모터 전류로부터 추정하거나 전용 관절 토크 센서(Dedicated Joint Torque Sensor)를 사용하여 측정할 수 있다. 직접 토크 측정(Direct Torque Measurement)은 임피던스 제어(Impedance Control), 순응형 조작(Compliant Manipulation), 충돌 감지(Collision Detection), 파지 안정화(Grasp Stabilization), 힘 인지형 도구 운용(Force-Aware Tool Operation)에 특히 유용하다. 로컬 제어기(Local Controller)는 명령 토크(Commanded Torque), 측정 토크, 모터 전류, 관절 가속도(Joint Acceleration)를 비교하여 예상된 동적 거동과 예상하지 못한 외부 접촉 또는 기계적 저항을 구분할 수 있다.
+
+손목 통신 인터페이스(Wrist Communication Interface)는 로컬 관절 제어기(Local Joint Controller)를 전완 네트워크(Forearm Network)와 엔드 이펙터 제어 시스템(End-Effector Control System)에 연결한다. 이더캣(EtherCAT)은 정밀한 동기화가 필요한 경우 결정론적 다축 서보 통신(Deterministic Multi-Axis Servo Communication)을 제공할 수 있으며, CAN FD는 소형 장치를 위한 강건한 제어(Control), 구성(Configuration), 진단(Diagnostics) 통신을 제공할 수 있다. 인터페이스는 관절 위치, 속도, 토크, 전류, 온도, 운전 상태(Operating State), 고장 상태(Fault Status), 진단 정보를 포함하는 일관된 데이터 모델(Data Model)을 사용해야 한다. 이를 통해 손목은 휴머노이드 분산 제어 아키텍처(Distributed Control Architecture) 내에서 표준화된 노드(Standardized Node)로 동작할 수 있다.
+
+손목 움직임은 팔꿈치, 전완, 손 및 전신 제어기(Whole-Body Controller)와 협조되어야 하기 때문에 시간 동기화(Timing Synchronization)가 중요하다. 위치 및 토크 샘플은 공통 시간 기준(Common Time Reference)과 연계되어야 하며, 액추에이터 명령은 예측 가능한 통신 주기(Predictable Communication Cycle) 내에서 실행되어야 한다. 정확한 동기화는 궤적 추종(Trajectory Tracking)과 방향 제어(Orientation Control)를 향상시키면서 빠르게 협조된 움직임을 수행할 때 발생하는 위상 오차(Phase Error)를 줄인다. 손이 물체와 상호작용하는 동시에 팔이 공간에서 움직이는 경우 이러한 기능은 특히 중요하다.
+
+손목 하네스(Wrist Harness)는 엔드 이펙터에 가까운 위치에서 반복적인 회전을 수용해야 하기 때문에 팔에서 가장 기계적으로 가혹한 전기 연결부 중 하나이다. 전력, 통신, 엔코더, 토크 센서, 브레이크(Brake), 보조 센서 도체(Auxiliary Sensor Conductor)는 지속적인 굽힘과 비틀림을 경험할 수 있다. 따라서 플렉스 대응 케이블(Flex-Rated Cable), 제어된 서비스 루프(Controlled Service Loop), 스트레인 릴리프(Strain Relief), 마모 보호(Abrasion Protection), 정밀하게 정의된 굽힘 반경(Bend Radius)이 필수적이다. 케이블 라우팅(Cable Routing)은 반복적인 움직임이 커넥터나 납땜 종단(Solder Termination)에 집중되지 않고 유연 구간 전체에 분산되도록 설계해야 한다.
+
+커넥터 설계(Connector Design)는 소형 패키징(Compact Packaging)과 빈번한 정비 접근성(Frequent Service Access)을 동시에 지원해야 한다. 전완-손목 인터페이스(Forearm-to-Wrist Interface)는 상위 하네스를 방해하지 않고 손목 모듈을 제거할 수 있도록 안정적인 전력, 통신, 센서, 안전 연결부를 제공해야 한다. 커넥터 키잉(Connector Keying)과 기계적 잠금(Mechanical Locking)은 오조립을 방지해야 하며, 접점 정격(Contact Rating)은 예상 전류와 신호 요구사항을 충족해야 한다. 또한 커넥터 배치는 전체 손목 운동 범위(Wrist Motion Envelope)에서 기계적으로 위험한 영역을 벗어나도록 해야 한다.
+
+손목은 모터, 감속 기구, 드라이버, 센서를 제한된 물리적 공간에 포함하면서 열을 방출해야 하기 때문에 열 관리(Thermal Management)가 어려워진다. 따라서 중요한 열원(Critical Heat Source), 특히 모터 권선(Motor Winding)과 드라이버 전력단(Driver Power Stage)에 온도 모니터링(Temperature Monitoring)을 적용해야 한다. 적절한 재료와 열 인터페이스(Thermal Interface)를 사용할 수 있다면 손목 하우징(Wrist Housing)을 열전도 경로(Thermal Conduction Path)로 활용할 수 있다. 온도가 정의된 한계에 접근하면 로컬 제어기는 즉시 관절을 비활성화하기보다 허용 토크 또는 속도를 점진적으로 감소시킬 수 있다.
+
+기능 안전(Functional Safety)은 예상하지 못한 손목 움직임의 결과를 고려해야 한다. 엔드 이펙터가 하중을 들고 있거나 사람 또는 물체와 직접 상호작용하고 있을 수 있기 때문이다. 관련 고장 조건에는 과전류(Overcurrent), 과전압(Overvoltage), 저전압(Undervoltage), 과열(Overtemperature), 엔코더 고장(Encoder Failure), 토크 편차(Torque Deviation), 과속(Overspeed), 통신 타임아웃(Communication Timeout), 드라이버 오작동(Driver Malfunction)이 포함된다. 안전 개념(Safety Concept)에 따라 손목은 토크 제한(Torque Limitation), 제어 감속(Controlled Deceleration), 안전 토크 차단(Safe Torque Off), 기계적 제동(Mechanical Braking)으로 대응할 수 있다. 선택된 대응 방식은 전기적 고장 격리(Electrical Fault Isolation)와 손 또는 도구의 기계적 상태를 모두 고려해야 한다.
+
+로컬 진단(Local Diagnostics)은 손목의 상태와 운전 조건에 대한 지속적인 가시성(Visibility)을 제공해야 한다. 모니터링 항목에는 공급 전압(Supply Voltage), 모터 전류, 엔코더 상태, 토크 거동(Torque Behavior), 온도, 통신 품질(Communication Quality), 액추에이터 상태(Actuator State), 누적 운전 시간(Accumulated Operating Time)이 포함될 수 있다. 이러한 매개변수를 상호 연계하면 마찰 증가, 비정상 하중, 센서 성능 저하, 커넥터 문제, 모터 성능 변화 등을 식별할 수 있다. 진단 식별자(Diagnostic Identifier)와 운전 이력(Operating History)은 생산 시험(Production Testing), 현장 정비(Field Service), 예지 정비(Predictive Maintenance)가 동일한 정보를 사용할 수 있도록 표준화된 형태로 보존해야 한다.
+
+손목은 또한 엔드 이펙터 인터페이스(End-Effector Interface)를 위한 제어된 전기적 경계(Controlled Electrical Boundary)를 제공해야 한다. 손, 그리퍼(Gripper), 도구(Tool), 기타 페이로드(Payload)에 공급되는 전력과 통신은 예상 부하와 안전 요구사항에 따라 분리하고 보호해야 한다. 엔드 이펙터 아키텍처에 따라 인터페이스는 서로 다른 전압 레일(Voltage Rail), 통신 링크(Communication Link), 식별 신호(Identification Signal), 안전 인터록(Safety Interlock)을 지원할 수 있다. 표준화(Standardization)를 통해 손목 액추에이터 전자장치의 근본적인 변경 없이 다양한 도구를 연결할 수 있다.
+
+모듈형 아키텍처(Modular Architecture)의 관점에서 손목은 정의된 기계적, 전기적, 통신, 안전, 진단 인터페이스를 갖는 교체 가능한 지능형 관절(Replaceable Intelligent Joint)로 구현해야 한다. 내부 전자장치는 전완과 엔드 이펙터로부터 충분히 독립되어 있어야 하며, 이를 통해 인접 모듈을 다시 설계하지 않고도 고장 난 액추에이터 또는 제어기를 교체할 수 있어야 한다. 이러한 모듈 경계(Modular Boundary)는 소형 모터, 엔코더, 토크 센서, 통신 장치, 제어 전자장치(Control Electronics)의 향후 발전을 지원하면서 전체 휴머노이드 팔 아키텍처를 유지할 수 있도록 한다.
+
+## 05.05. End Effector Interface
+
+![](images/image5.png){width="7.268055555555556in" height="7.268055555555556in"}
+
+엔드 이펙터 인터페이스(End-Effector Interface)는 휴머노이드의 손목(Wrist)과 덱스터러스 핸드(Dexterous Hand), 그리퍼(Gripper), 특수 조작기(Specialized Manipulator)와 같은 교체 가능한 도구 사이의 전기적·기계적 경계(Electrical and Mechanical Boundary)를 형성한다. 내부 관절 인터페이스(Internal Joint Interface)와 달리 다양한 페이로드 아키텍처(Payload Architecture)를 수용하면서 표준화된 전력(Power), 통신(Communication), 식별(Identification), 안전 기능(Safety Function)을 유지해야 한다. 따라서 인터페이스는 도구별 요구사항(Tool-Specific Requirement)을 손목 액추에이터 시스템(Wrist Actuator System)과 분리하고 향후 엔드 이펙터 설계를 위한 예측 가능한 연결 지점(Predictable Connection Point)을 제공해야 한다.
+
+기계적 인터페이스(Mechanical Interface)는 정밀한 위치 결정(Accurate Positioning), 충분한 구조 강성(Structural Stiffness), 동적 조작 중 안정적인 체결(Secure Attachment)을 제공해야 한다. 정렬 기능(Alignment Feature), 위치 결정 핀(Locating Pin), 잠금 메커니즘(Locking Mechanism), 정의된 장착면(Mounting Surface)은 손목과 장착 장치 사이의 의도하지 않은 움직임을 방지해야 한다. 인터페이스는 과도한 변형 없이 예상되는 힘, 토크, 진동, 페이로드 조건을 견딜 수 있어야 한다. 또한 손목 모듈이나 상위 팔 구조를 방해하지 않고 다양한 손이나 도구를 신속하게 교체할 수 있도록 기계적 설계를 구성해야 한다.
+
+전기적 전력(Electrical Power)은 예상되는 엔드 이펙터 부하를 지원할 수 있도록 보호된 인터페이스를 통해 공급되어야 한다. 저전압 전원(Low-Voltage Supply)은 손 전자장치(Hand Electronics), 내장 제어기(Embedded Controller), 센서, 통신 장치, 소형 액추에이터를 지원할 수 있으며, 높은 전력이 필요한 경우에는 별도로 정의된 전력 레일(Power Rail)이 필요할 수 있다. 전류 제한(Current Limit), 전압 모니터링(Voltage Monitoring), 분기 보호(Branch Protection), 제어된 전원 스위칭(Controlled Power Switching)을 구현하여 단락이나 고장 난 도구가 손목 또는 팔의 전력 네트워크로 고장을 전파하지 않도록 해야 한다.
+
+통신(Communication)은 손목 또는 상위 제어기가 장착된 엔드 이펙터와 명령 및 상태 정보를 교환할 수 있도록 해야 한다. CAN FD 또는 적절한 다른 결정론적 인터페이스(Deterministic Interface)는 소형 도구 제어기를 지원할 수 있으며, 이더넷 기반 통신(Ethernet-Based Communication)은 더 높은 대역폭이 필요한 장치에 적합할 수 있다. 인터페이스는 장치 상태(Device Status), 액추에이터 상태(Actuator State), 센서 정보(Sensor Information), 고장 보고(Fault Reporting), 구성(Configuration), 제어(Control)를 위한 표준화된 메시지를 정의해야 한다. 통신 아키텍처는 서로 다른 세대의 도구가 공통 인터페이스(Common Interface)를 통해 동작할 수 있도록 해야 한다.
+
+자동 엔드 이펙터 식별(Automatic End-Effector Identification)은 도구 교체와 시스템 구성을 단순화할 수 있다. 손, 그리퍼 또는 특수 도구가 연결되면 인터페이스는 장치 유형(Device Type), 하드웨어 리비전(Hardware Revision), 펌웨어 버전(Firmware Version), 지원 기능(Supported Functions), 전력 요구사항(Power Requirement), 통신 기능(Communication Capability), 보정 정보(Calibration Information) 등의 식별 정보를 제공할 수 있다. 식별 메커니즘 자체가 신뢰성 있게 보호된다는 조건에서 손목 제어기(Wrist Controller)는 이 정보를 사용하여 광범위한 수동 구성 없이 적절한 운전 프로파일(Operating Profile)을 설정할 수 있다.
+
+안전 인터록(Safety Interlock)은 엔드 이펙터에 이동 메커니즘(Moving Mechanism), 날카로운 도구(Sharp Tool), 고출력 액추에이터(High-Force Actuator) 또는 기타 잠재적으로 위험한 기능이 포함될 수 있기 때문에 필수적이다. 인터페이스는 안전한 기계적 체결(Secure Mechanical Attachment), 유효한 전기적 연결(Valid Electrical Connection), 적절한 통신 상태(Communication Status), 적절한 도구 인증(Tool Authorization)을 확인한 후에만 동작을 허용할 수 있어야 한다. 인터록이 유효하지 않게 되면 시스템은 엔드 이펙터를 정의된 안전 상태(Safe State)로 전환하고 의도하지 않은 액추에이터 활성화(Actuator Activation)를 방지해야 한다.
+
+고급 핸드와 도구에는 센서 및 피드백 인터페이스(Sensor and Feedback Interface)가 필요할 수 있다. 엔드 이펙터의 구조에 따라 연결부는 힘(Force), 촉각(Tactile), 위치(Position), 온도(Temperature), 전류(Current), 접촉(Contact) 또는 도구별 센서 정보를 전달할 수 있다. 이러한 신호는 조작 제어기(Manipulation Controller)가 도구 피드백을 관절 움직임과 연계할 수 있도록 손목 및 팔의 상태 정보와 시간적으로 일관되어야 한다. 고대역폭 센서 인터페이스(High-Bandwidth Sensor Interface)는 모터 전력 스위칭 노이즈(Motor Power Switching Noise)로부터 물리적·전기적으로 보호되어야 한다.
+
+인터페이스는 손목과 엔드 이펙터 사이에서 적절한 접지(Grounding)와 전자기 적합성(Electromagnetic Compatibility)을 제공해야 한다. 전력 귀환(Power Return), 신호 접지(Signal Ground), 섀시 본딩(Chassis Bonding), 통신 차폐(Communication Shielding)는 기계적 접촉에 의존하도록 방치하지 말고 명확하게 정의해야 한다. 차폐된 통신(Shielded Communication)을 사용하는 경우 차폐 종단 전략(Shield Termination Strategy)은 의도하지 않은 전류 경로(Current Path)나 접지 루프(Ground Loop)를 만들지 않으면서 신호 무결성(Signal Integrity)을 유지해야 한다. 커넥터 구조와 핀 할당(Pin Assignment) 역시 전력이 민감한 신호 접점(Sensitive Signal Contact)에 우발적으로 연결되지 않도록 설계해야 한다.
+
+커넥터 선정(Connector Selection)은 전류 용량(Current Capacity), 신호 밀도(Signal Density), 기계적 강도(Mechanical Strength), 결합 수명(Mating Cycle), 환경 보호(Environmental Protection), 정비성(Serviceability) 사이의 균형을 이루어야 한다. 소형 커넥터는 하나의 제어된 인터페이스 안에서 전력, 통신, 식별, 안전, 센서 신호를 전달해야 할 수 있다. 기계적 키잉(Mechanical Keying)은 잘못된 방향의 체결을 방지해야 하며, 잠금 메커니즘(Locking Mechanism)은 진동과 반복적인 조작에도 체결 상태를 유지해야 한다. 커넥터는 교체가 가능할 정도로 접근하기 쉬우면서도 직접적인 충격과 과도한 기계적 하중으로부터 보호되어야 한다.
+
+진단(Diagnostics)은 인터페이스를 넘어 확장되어 손목 제어기가 도구 고장과 손목 또는 상위 팔의 고장을 구분할 수 있도록 해야 한다. 운전 중 공급 전압(Supply Voltage), 전류, 통신 품질(Communication Quality), 식별 상태(Identification Status), 인터록 상태(Interlock State), 센서 유효성(Sensor Validity), 도구가 보고하는 고장 정보를 모니터링할 수 있다. 고장 기록(Fault Record)은 문제가 커넥터, 전력 경로(Power Path), 통신 링크(Communication Link), 장착 장치 중 어디에서 발생했는지를 식별할 수 있어야 한다. 이러한 구분은 정비성을 향상시키고 정상적인 손목 구성품을 불필요하게 교체하는 것을 방지한다.
+
+엔드 이펙터를 장착하거나 제거할 때는 제어된 전원 시퀀싱(Controlled Power Sequencing)을 지원해야 한다. 커넥터가 물리적으로 결합되었다고 해서 전원을 즉시 공급할 필요는 없으며, 시스템은 도구 식별(Identification), 전기적 조건(Electrical Condition), 통신 가용성(Communication Availability), 안전 인터록을 먼저 확인한 후 도구를 활성화할 수 있다. 제거 과정에서는 전기적으로 분리하기 전에 액추에이터 명령을 비활성화하고 저장되었거나 잔류하는 에너지(Residual Energy)를 관리해야 한다. 이러한 시퀀스는 의도하지 않은 움직임, 커넥터 아킹(Connector Arcing), 민감한 전자장치 손상 가능성을 줄인다.
+
+모듈형 아키텍처(Modular Architecture)의 관점에서 엔드 이펙터 인터페이스는 특정 도구에 맞춘 배선 구조가 아니라 표준화된 플랫폼 경계(Standardized Platform Boundary)로 취급해야 한다. 공통 기계 장착 패턴(Common Mechanical Mounting Pattern)에 정의된 전력 레일, 통신 채널, 식별 기능, 센서 인터페이스, 안전 인터록을 결합하면 다양한 엔드 이펙터가 동일한 손목 아키텍처를 공유할 수 있다. 이러한 접근 방식은 휴머노이드 로봇이 덱스터러스 핸드, 그리퍼, 검사 도구(Inspection Tool), 특수 장비(Specialized Equipment) 사이를 전환할 수 있도록 하면서도 팔 전체의 공통 전기 아키텍처(Common Electrical Architecture)를 유지할 수 있도록 한다.
+
+## 05.06. Arm Integration
+
+![](images/image6.png){width="7.268055555555556in" height="7.268055555555556in"}
+
+팔 통합(Arm Integration)은 어깨(Shoulder), 상완(Upper Arm), 팔꿈치(Elbow), 손목(Wrist), 엔드 이펙터 인터페이스(End-Effector Interface)를 하나의 협조된 전기적·전기기계적 서브시스템(Electrical and Electromechanical Subsystem)으로 통합한다. 각 모듈은 독립적인 기능 단위(Functional Unit)로 동작할 수 있지만, 전체 팔은 액추에이터(Actuator), 센서(Sensor), 제어기(Controller), 전력 경로(Power Path), 통신 링크(Communication Link), 안전 기능(Safety Function)이 동기화된 하나의 체인으로 동작해야 한다. 따라서 통합 아키텍처(Integration Architecture)는 모든 팔 모듈이 전력, 명령, 피드백, 시간 정보, 진단 상태를 교환할 수 있도록 공통 인터페이스(Common Interface)와 운용 규칙(Operating Rule)을 정의한다.
+
+팔 전력 아키텍처(Arm Power Architecture)는 몸통 전력 분배 시스템(Torso Power Distribution System)에서 어깨와 상완 하네스(Upper-Arm Harness)를 거쳐 팔꿈치, 손목, 엔드 이펙터 인터페이스까지 제어된 전기 경로(Electrical Path)를 제공해야 한다. 전력 분기(Power Branch)는 동시에 작동하는 액추에이터의 요구 전력을 기준으로 선정해야 하며 전압 강하(Voltage Drop), 과도 전류(Transient Current), 열적 한계(Thermal Limit), 커넥터 용량(Connector Capacity), 보호 협조(Protection Coordination)를 함께 고려해야 한다. 로컬 보호(Local Protection)와 전류 모니터링(Current Monitoring)은 가능한 가장 작은 영역에서 고장을 격리할 수 있도록 하여 하나의 관절 고장이 전체 팔이나 다른 휴머노이드 서브시스템을 불필요하게 비활성화하지 않도록 해야 한다.
+
+통신 통합(Communication Integration)은 분산 관절 제어기(Distributed Joint Controller)를 결정론적 팔 제어 네트워크(Deterministic Arm Control Network)로 연결한다. 이더캣(EtherCAT)은 여러 팔 축에서 동기화된 고속 서보 제어(High-Rate Servo Control)를 지원할 수 있으며, CAN FD는 선택된 모듈에 대해 강건한 제어(Control), 구성(Configuration), 진단(Diagnostics) 통신을 제공할 수 있다. 네트워크 아키텍처(Network Architecture)는 일관된 노드 식별(Node Identification), 메시지 정의(Message Definition), 고장 보고(Fault Reporting), 명령 인터페이스(Command Interface)를 유지해야 한다. 불필요한 게이트웨이(Gateway)는 추가적인 변환 과정에서 지연시간(Latency), 복잡성(Complexity), 추가적인 진단 고장 모드(Diagnostic Failure Mode)를 발생시킬 수 있으므로 최소화해야 한다.
+
+시간 동기화(Time Synchronization)는 어깨, 팔꿈치, 손목, 엔드 이펙터의 상태를 공통 시간 기준(Common Temporal Reference)에서 해석해야 하기 때문에 필수적이다. 위치(Position), 속도(Velocity), 토크(Torque), 전류(Current), 센서 측정값(Sensor Measurement)은 정의된 동기화 방식(Synchronization Mechanism)에 따라 타임스탬프(Time Stamp)가 부여되거나 샘플링되어야 한다. 이후 협조된 액추에이터 명령(Coordinated Actuator Command)은 예측 가능한 통신 주기(Predictable Communication Cycle) 내에서 실행되어야 한다. 정확한 시간 동기화는 궤적 추종(Trajectory Tracking), 임피던스 제어(Impedance Control), 힘 상호작용(Force Interaction), 엔드 이펙터 위치 제어(End-Effector Positioning)를 향상시키며, 여러 팔 관절이 동시에 움직이는 경우 특히 중요하다.
+
+팔 하네스(Arm Harness)는 고전류 전력(High-Current Power), 통신(Communication), 엔코더(Encoder), 토크(Torque), 브레이크(Brake), 안전(Safety), 보조 센서(Auxiliary Sensor) 회로를 통합하면서 반복적인 다축 움직임을 지원해야 한다. 배선 라우팅(Routing)은 각 관절을 독립적으로 취급하는 것이 아니라 어깨, 팔꿈치, 손목에서 발생하는 복합적인 움직임을 함께 고려해야 한다. 플렉스 대응 케이블(Flex-Rated Cable), 제어된 서비스 루프(Controlled Service Loop), 스트레인 릴리프(Strain Relief), 차폐(Shielding), 노이즈가 큰 회로와 민감한 회로의 분리(Separation of Noisy and Sensitive Circuits), 모듈 사이의 보호된 전이 구간(Protected Transition)이 전체 팔 운동 범위(Motion Envelope)에서 전기적 무결성(Electrical Integrity)을 유지하기 위해 필요하다.
+
+전자기 적합성(Electromagnetic Compatibility)은 모터 드라이버(Motor Driver)와 스위칭 전원 회로(Switching Power Circuit)가 엔코더, 토크 센서, 통신 링크, 엔드 이펙터 전자장치에 영향을 줄 수 있는 외란(Disturbance)을 발생시킬 수 있기 때문에 통합된 팔 수준에서 고려해야 한다. 전력 경로와 신호 경로는 결합(Coupling)을 줄일 수 있도록 물리적으로 배치해야 하며, 접지(Grounding)와 차폐 전략(Shielding Strategy)은 제어된 귀환 경로(Return Path)를 제공해야 한다. 팔 구조체, 커넥터, 케이블 차폐, 로컬 전자장치는 일관된 본딩 규칙(Bonding Rule)을 따라야 하며, 이를 통해 통합 과정에서 의도하지 않은 접지 루프(Ground Loop)나 연속성 단절(Discontinuity)이 발생하지 않도록 해야 한다.
+
+각 팔 모듈은 표준화된 상태 및 진단 정보(Standardized Status and Diagnostic Information)를 팔 수준 제어기(Arm-Level Controller)에 제공해야 한다. 관절 위치, 속도, 토크, 모터 전류, 온도, 공급 전압, 통신 상태, 엔코더 상태, 로컬 고장 조건(Local Fault Condition)을 결합하여 전체 팔의 상태(Overall Arm Health State)를 판단할 수 있다. 제어기는 로컬 액추에이터 고장(Local Actuator Fault)을 하네스, 네트워크, 전력 또는 엔드 이펙터 고장과 구분해야 한다. 이러한 계층적 진단 구조(Hierarchical Diagnostic Structure)는 고장 위치를 보다 효율적으로 파악할 수 있도록 하며 정상적인 모듈을 불필요하게 교체하지 않고 정비할 수 있도록 한다.
+
+안전 통합(Safety Integration)은 하나의 액추에이터에서 토크를 제거하는 것이 팔 전체의 기계적 상태에 영향을 줄 수 있기 때문에 모든 팔 관절의 대응을 협조해야 한다. 비상 정지(Emergency Stop), 안전 토크 차단(Safe Torque Off), 토크 제한(Torque Limitation), 제어 감속(Controlled Deceleration), 브레이크 제어(Brake Control), 통신 타임아웃(Communication Timeout) 대응은 어깨, 팔꿈치, 손목, 엔드 이펙터 인터페이스 전체에서 일관되게 정의해야 한다. 선택된 대응 방식은 팔에 하중이 없는 상태, 물체를 잡고 있는 상태, 사람과 상호작용하는 상태, 저장된 기계적 에너지(Stored Mechanical Energy)를 가진 도구를 지지하는 상태 등을 고려해야 한다.
+
+팔 제어기(Arm Controller)는 상위 수준의 모션 플래닝(Motion Planning)과 결정론적 로컬 액추에이터 제어(Deterministic Local Actuator Control) 사이에 명확한 경계를 제공해야 한다. 전신 제어(Whole-Body Control) 또는 체화 인공지능(Embodied AI) 시스템은 팔 궤적, 자세, 힘 또는 조작 명령을 생성할 수 있으며, 로컬 관절 제어기(Local Joint Controller)는 이러한 요청을 제한된 모터 명령(Bounded Motor Command)으로 변환한다. 팔에서 반환되는 피드백(Feedback)은 동일한 통합 아키텍처를 통해 전달되어 상위 수준 시스템이 개별 전력단(Power Stage)을 직접 제어하지 않고도 관절 상태, 상호작용 힘(Interaction Force), 고장, 엔드 이펙터 상태를 관측할 수 있도록 한다.
+
+교정 및 시운전(Calibration and Commissioning)은 팔을 독립적인 모듈의 집합이 아니라 통합된 운동학적·전기적 시스템(Integrated Kinematic and Electrical System)으로 취급해야 한다. 엔코더 영점 위치(Encoder Zero Position), 관절 한계(Joint Limit), 토크 오프셋(Torque Offset), 전류 측정값(Current Measurement), 통신 식별자(Communication Identifier), 엔드 이펙터 교정 데이터(End-Effector Calibration Data)는 전체 팔 체인에서 일관되어야 한다. 검증 과정에서는 명령된 관절 움직임이 예상되는 엔드 이펙터 움직임을 생성하는지 확인하고, 다양한 팔 자세와 운용 조건에서 센서 피드백이 일관되게 유지되는지를 확인해야 한다.
+
+통합 팔 아키텍처(Integrated Arm Architecture)는 휴머노이드 주변 시스템을 광범위하게 재구성하지 않고도 모듈 교체를 지원해야 한다. 어깨, 상완, 팔꿈치, 손목, 엔드 이펙터 모듈은 정의된 기계적, 전기적, 통신, 안전, 진단 경계(Boundary)를 가져야 한다. 교체 모듈은 표준화된 장치 정보(Standardized Device Information)를 통해 식별되어야 하며, 통신을 설정하고 전기적 조건을 확인하고 적절한 파라미터를 로드한 후 제어된 초기화 시퀀스(Controlled Initialization Sequence)를 통해 활성화 상태(Enabled State)로 진입할 수 있어야 한다.
+
+수명주기(Lifecycle) 관점에서 팔 통합은 생산 시험(Production Testing), 현장 정비(Field Service), 진단(Diagnostics), 향후 업그레이드를 위한 기반을 제공한다. 제조 시험에서는 통합 시스템으로서 전력 분배, 통신, 센서 동작, 액추에이터 응답, 안전 기능, 엔드 이펙터 인터페이스를 검증할 수 있다. 현장 운용 중에도 동일한 표준화 인터페이스를 통해 고장을 교체 가능한 모듈 수준으로 위치시킬 수 있다. 이러한 아키텍처는 팔 구성 간 공통성(Commonality)을 유지하면서도 향후 모터, 센서, 제어기, 하네스, 엔드 이펙터가 발전할 수 있도록 하며, 휴머노이드 전체 전기 시스템을 다시 설계하지 않고도 시스템을 확장할 수 있도록 한다.
