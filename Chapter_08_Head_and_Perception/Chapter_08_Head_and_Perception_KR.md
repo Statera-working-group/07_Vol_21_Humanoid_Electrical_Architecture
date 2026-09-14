@@ -1,0 +1,231 @@
+**Volume 21. Humanoid Electrical Architecture**
+
+# Chapter 08. Head and Perception
+
+## 08.01. Camera Array
+
+![](images/image1.png){width="7.268055555555556in" height="7.268055555555556in"}
+
+휴머노이드 카메라 배열(Camera Array)은 헤드 및 인지 아키텍처(Head and Perception Architecture)의 핵심 시각 센싱 계층(Visual Sensing Layer)을 구성하며, 주변 환경의 빛을 동기화된 디지털 영상 스트림(Digital Image Stream)으로 변환하여 인지(Perception), 내비게이션(Navigation), 조작(Manipulation), 인간 상호작용(Human Interaction)에 활용한다. 전기전자 아키텍처(Electrical Architecture)는 각 카메라를 독립 센서로 취급하기보다 여러 카메라를 인지 컴퓨터(Perception Computer)에 연결된 하나의 통합 센싱 서브시스템(Sensing Subsystem)으로 구성한다.
+
+카메라 배열(Camera Array)은 일반적으로 휴머노이드 헤드 주변에 중첩 시야(Overlapping Field of View)를 제공하도록 배치된다. 전방 스테레오 카메라 쌍(Stereo Camera Pair)은 깊이 추정(Depth Estimation)과 3차원 재구성(Three-Dimensional Reconstruction)을 지원하며, 추가 광각 카메라(Wide-Angle Camera)는 주변 시야를 확장하고 사각 영역(Blind Region)을 감소시킨다. 응용 분야에 따라 손, 작업 공간, 바닥 또는 상호작용 영역을 관찰하는 전용 카메라를 배치하여 지속적인 헤드 움직임 없이 필요한 시각 정보를 획득할 수도 있다.
+
+스테레오 비전(Stereo Vision)은 기계적 정렬(Mechanical Alignment), 영상 동기화(Image Synchronization), 보정 안정성(Calibration Stability)에 높은 수준의 요구사항을 가진다. 좌우 카메라는 움직이는 물체나 로봇 자체의 움직임으로 인해 잘못된 시차(False Disparity)가 발생하지 않도록 충분히 작은 시간 차이로 대응 장면을 촬영해야 한다. 따라서 진동, 열팽창 또는 기계적 충격에 의해 광축(Optical Axis) 사이의 보정 관계가 변할 수 있으므로 카메라 장착 구조 역시 센싱 아키텍처의 일부로 고려해야 한다.
+
+카메라 선택은 단순히 영상 해상도(Image Resolution)만으로 결정되지 않는다. 프레임 속도(Frame Rate), 픽셀 크기(Pixel Size), 동적 범위(Dynamic Range), 셔터 방식(Shutter Type), 감도(Sensitivity), 렌즈 특성(Lens Characteristics), 인터페이스 대역폭(Interface Bandwidth), 소비전력(Power Consumption), 동작 온도(Operating Temperature)가 전체 시스템 성능에 영향을 미친다. 특히 글로벌 셔터(Global Shutter) 센서는 헤드, 몸체, 손 또는 주변 물체가 빠르게 움직일 때 발생하는 기하학적 왜곡을 줄일 수 있어 동적 휴머노이드 응용에 유용하다.
+
+하나의 카메라 배열에는 서로 다른 광학 구성(Optical Configuration)이 함께 적용될 수 있다. 좁은 화각의 렌즈는 객체 인식(Object Recognition)과 조작(Manipulation)에 필요한 높은 공간적 세부 정보를 제공하며, 광각 렌즈(Wide-Angle Lens)는 상황 인식(Situational Awareness)을 향상시킨다. RGB 카메라는 외관 정보를 제공하고, 흑백 카메라(Monochrome Camera) 또는 근적외선 카메라(Near-Infrared Camera)는 특수한 인지 작업에서 감도를 향상시킬 수 있다. 단거리와 중거리에서 직접적인 거리 정보가 필요한 경우 깊이 카메라(Depth Camera)를 스테레오 비전과 함께 사용할 수도 있다.
+
+전기전자 아키텍처는 모든 카메라 모듈(Camera Module)에 깨끗하고 안정적인 전원을 공급해야 한다. 이미지 센서(Image Sensor), 직렬화기(Serializer), 인터페이스 컨트롤러(Interface Controller), 로컬 처리 장치(Local Processing Device)는 휴머노이드 내부의 모터와 스위칭 전력 변환기(Switching Power Converter)에서 발생하는 전원 리플(Supply Ripple)과 과도현상(Transient Disturbance)에 민감할 수 있다. 전용 전압 조정, 필터링, 접지, 차폐 및 적절한 전원 도메인 분리(Power-Domain Separation)를 통해 전기적 잡음이 영상 품질과 통신 신뢰성을 저하시키는 것을 방지해야 한다.
+
+고해상도 다중 카메라 시스템(High-Resolution Multi-Camera System)은 상당한 데이터 대역폭(Data Bandwidth)을 발생시킨다. 여러 카메라가 높은 프레임 속도로 동시에 동작하면 기존 저속 로봇 네트워크가 실질적으로 처리할 수 있는 용량을 초과할 수 있다. 따라서 카메라 배치, 케이블 길이, 대역폭, 전자파 적합성(Electromagnetic Compatibility), 지연시간(Latency), 정비성(Serviceability)에 따라 MIPI CSI-2, GMSL 계열 직렬 링크(Serialized Link), USB 또는 기가비트 이더넷(Gigabit Ethernet)과 같은 고속 인터페이스를 선택할 수 있다.
+
+휴머노이드 내부의 장거리 카메라 연결은 움직이는 헤드에서 목을 통과하여 몸통에 장착된 인지 컴퓨터까지 신호가 전달될 수 있기 때문에 추가적인 전기적 과제를 발생시킨다. 고속 차동 링크(High-Speed Differential Link)에는 제어 임피던스(Controlled Impedance), 적절한 차폐, 견고한 커넥터, 액추에이터 전력 케이블과 분리된 신중한 배선 경로가 필요하다. 목 주변의 유연 하네스(Flexible Harness)는 반복적인 움직임에도 간헐적인 신호 무결성(Signal Integrity) 문제나 접지 장애가 발생하지 않도록 설계해야 한다.
+
+영상이 라이다(LiDAR), 관성측정장치(IMU), 관절 엔코더(Joint Encoder), 힘 센서(Force Sensor) 또는 다른 인지 센서와 융합되는 경우 정밀한 시간 동기화(Time Synchronization)가 필수적이다. 각 프레임에는 소프트웨어가 영상을 수신한 시각이 아니라 실제 영상이 촬영된 시각을 나타내는 정확한 캡처 타임스탬프(Capture Timestamp)가 연결되어야 한다. 하드웨어 트리거링(Hardware Triggering), 동기화 클록(Synchronized Clock) 또는 네트워크 기반 시간 동기화를 통해 공통 시간 기준(Common Temporal Reference)을 형성하고 빠른 휴머노이드 움직임에서 발생하는 센서 융합 오차를 줄일 수 있다.
+
+카메라 배열은 모든 센서와 데이터 스트림(Data Stream)을 결정론적으로 식별할 수 있어야 한다. 각 카메라에는 물리적 위치(Physical Location), 논리 식별자(Logical Identifier), 보정 기록(Calibration Record), 펌웨어 버전(Firmware Version), 통신 엔드포인트(Communication Endpoint)를 할당할 수 있다. 이를 통해 제조 및 유지보수 과정에서 좌우 또는 전방과 측면 영상 스트림이 혼동되는 것을 방지할 수 있다. 구성 정보에는 인지 소프트웨어가 요구하는 해상도, 노출 한계, 프레임 속도, 트리거 모드, 광학 파라미터도 포함할 수 있다.
+
+보정(Calibration)은 전기적 카메라 서브시스템을 휴머노이드의 기하학적 모델(Geometric Model)과 연결한다. 내부 보정(Intrinsic Calibration)은 초점 거리(Focal Length), 주점(Principal Point), 렌즈 왜곡(Lens Distortion) 및 관련 광학 특성을 정의하며, 외부 보정(Extrinsic Calibration)은 각 카메라가 다른 센서와 로봇 좌표계(Robot Coordinate Frame)에 대해 가지는 자세(Pose)를 정의한다. 카메라 교체로 인해 인지 시스템의 기하학적 관계가 의도치 않게 무효화되지 않도록 보정 파라미터는 버전 관리되고 개별 하드웨어와 연계되어야 한다.
+
+휴머노이드가 조명 조건이 크게 다른 환경 사이를 이동할 때는 노출 제어(Exposure Control)가 중요해진다. 카메라 서브시스템은 수초 내에 실내조명, 창문, 직사광선, 그림자, 반사 표면 또는 저조도 환경을 연속적으로 경험할 수 있다. 자동 노출 및 이득 제어(Automatic Exposure and Gain Control)는 빠르게 반응하면서도 스테레오 또는 다중 시점 처리(Multi-View Processing)에 사용되는 카메라 사이의 일관성을 유지해야 한다. 카메라 간 밝기 차이가 지나치게 크면 영상 대응점(Correspondence)의 품질이 저하될 수 있기 때문이다.
+
+열 설계(Thermal Design) 역시 영상 품질과 보정에 영향을 미친다. 이미지 센서와 인터페이스 전자회로는 열을 발생시키며, 인접한 인지 컴퓨터, 디스플레이, 스피커 및 기계식 액추에이터도 헤드 인클로저(Head Enclosure) 내부 온도를 상승시킬 수 있다. 온도 변화는 센서 잡음과 기계적 정렬에 영향을 줄 수 있으므로 헤드 수준의 전기적 통합 과정에서 열 전달 경로(Thermal Path), 환기, 열 확산(Heat Spreading), 온도 모니터링, 보정 보상(Calibration Compensation)을 함께 고려해야 한다.
+
+전자파 적합성(Electromagnetic Compatibility)은 카메라 신호가 모터 드라이브, 스위칭 컨버터, 이더넷 링크, 디스플레이, 마이크 및 무선 통신 장치와 함께 동작하기 때문에 특히 중요하다. 케이블 차폐와 섀시 기준(Chassis Reference)은 개별적으로 추가하기보다 전체 접지 전략(Grounding Strategy)의 일부로 설계해야 한다. 고속 영상 링크는 전자기 간섭(Electromagnetic Interference)을 받는 동시에 발생시킬 수도 있으므로 커넥터 전이부, 차폐 종단(Shield Termination), 공통 모드 전류(Common-Mode Current), 케이블 배선 경로를 종합적으로 평가해야 한다.
+
+카메라 진단(Camera Diagnostics)은 장애가 상위 인지 동작으로 전파되기 전에 문제를 감지해야 한다. 유용한 진단 지표에는 프레임 누락(Missing Frame), 과도한 프레임 지연, 동기화 손실, 링크 오류(Link Error), 비정상 온도, 예상 범위를 벗어난 노출 값, 손상된 영상(Corrupted Image), 통신 재설정 등이 포함된다. 인지 컴퓨터는 이러한 지표와 영상 품질 검사(Image-Quality Check)를 결합하여 전기적 또는 통신 장애와 어두운 환경이나 일시적인 렌즈 가림 같은 외부 환경 조건을 구분할 수 있다.
+
+견고한 카메라 배열은 개별 카메라를 사용할 수 없게 되었을 때도 점진적 성능 저하(Graceful Degradation)를 지원해야 한다. 카메라 상태 정보를 인지 소프트웨어에 전달하여 알고리즘이 유효하지 않은 영상 스트림을 사용하지 않도록 하고, 가능한 경우 제한된 센싱 기능으로 계속 동작하도록 구성할 수 있다. 중요한 기능은 모든 카메라가 항상 정상적으로 동작한다고 가정해서는 안 되며, 필요한 센서 중복성(Redundancy)은 안전 개념(Safety Concept)과 사람 주변의 로봇 움직임에 영향을 주는 시각 기능의 중요도에 따라 결정해야 한다.
+
+카메라 서브시스템은 휴머노이드가 가정, 사무실, 공장, 병원 등 사람 중심의 환경에서 동작할 수 있으므로 개인정보 보호(Privacy)와 사이버보안(Cybersecurity)도 고려해야 한다. 영상 스트림은 승인된 처리 경로에서만 접근할 수 있어야 하며, 원격 인터페이스는 원시 영상(Raw Video)이 의도하지 않게 노출되는 것을 방지해야 한다. 보안 부팅(Secure Boot), 인증된 소프트웨어(Authenticated Software), 보호된 구성 정보 및 통제된 데이터 로깅(Controlled Data Logging)은 시각 센싱 체인(Visual Sensing Chain)의 신뢰성을 유지하는 데 기여한다.
+
+정비성(Serviceability)은 실제 카메라 배열 설계에 큰 영향을 미친다. 카메라 모듈은 헤드를 광범위하게 분해하지 않고도 교체할 수 있어야 하며, 커넥터와 하네스는 잘못된 장착을 방지하도록 설계해야 한다. 교체 절차에서는 새로운 모듈을 식별하고 통신 상태를 검증한 후 보정 데이터를 불러오거나 새로 생성하며, 동기화와 영상 품질을 확인한 다음 휴머노이드를 정상 운용 상태로 복귀시킬 수 있어야 한다.
+
+시스템 수준에서 카메라 배열은 물리적 환경(Physical Environment)을 휴머노이드의 인지 및 체화형 인공지능(Embodied AI) 기능과 연결한다. 동기화된 시각 스트림은 객체 검출(Object Detection), 분할(Segmentation), 깊이 추정, 추적(Tracking), 시각적 위치 추정(Visual Localization), 인간 자세 추정(Human Pose Estimation), 제스처 인식(Gesture Recognition), 조작 계획(Manipulation Planning), 비전-언어 모델(Vision-Language Model)에 입력될 수 있다. 따라서 전기적 설계는 이미지 센서에서 인지 컴퓨터까지 영상 무결성(Image Integrity), 시간 정확도, 대역폭, 신뢰성 및 유지보수성을 보장해야 한다.
+
+확장 가능한 카메라 아키텍처(Scalable Camera Architecture)는 휴머노이드 전기전자 시스템 전체를 다시 설계하지 않고도 향후 새로운 센서를 추가할 수 있어야 한다. 예비 인터페이스 대역폭(Reserved Interface Bandwidth), 모듈형 전원 채널(Modular Power Channel), 구성 가능한 동기화 자원, 표준화된 커넥터, 소프트웨어 정의 센서 식별자(Software-Defined Sensor Identity)를 적용하면 향후 업그레이드가 쉬워진다. 이러한 모듈형 접근 방식은 인지 요구사항의 발전에 따라 고해상도 카메라, 이벤트 기반 센서(Event-Based Sensor), 향상된 깊이 센서 또는 특수 분광 카메라(Spectral Camera)를 도입할 수 있도록 한다.
+
+## 08.02. LiDAR
+
+![](images/image2.png){width="7.268055555555556in" height="7.268055555555556in"}
+
+라이다(LiDAR)는 센서와 가시 표면(Visible Surface) 사이의 거리를 측정하여 휴머노이드 로봇(Humanoid Robot)에 주변 환경에 대한 직접적인 기하학적 정보(Geometric Information)를 제공한다. 헤드 및 인지 아키텍처(Head and Perception Architecture)에서 라이다는 카메라 배열(Camera Array)을 보완하며, 텍스처(Texture), 색상(Color) 또는 일반적인 영상 대응(Image Correspondence)에 대한 의존도가 낮은 공간 측정값(Spatial Measurement)을 생성한다. 이렇게 생성된 거리 데이터(Range Data)는 환경 인지(Environmental Perception), 위치 추정(Localization), 장애물 검출(Obstacle Detection), 내비게이션(Navigation), 사람 인지 기반 동작 계획(Human-Aware Motion Planning)을 지원한다.
+
+휴머노이드 라이다 설치는 시야각(Field of View), 감지 거리(Sensing Range), 각도 해상도(Angular Resolution), 갱신율(Update Rate), 물리적 크기(Physical Size), 소비전력(Power Consumption), 기계적 통합(Mechanical Integration) 사이의 균형을 필요로 한다. 헤드 장착 방식(Head-Mounted Placement)은 인간의 시각과 유사하게 높은 관찰 지점을 제공하여 가구, 벽, 사람, 이동 통로의 관찰 성능을 향상시킬 수 있다. 그러나 정상적인 움직임에서 얼굴, 어깨, 팔, 운반 물체 및 기타 신체 구조물에 의해 발생하는 가림(Occlusion)을 최소화하도록 센서 위치를 결정해야 한다.
+
+요구되는 인지 기능에 따라 다양한 라이다 기술(LiDAR Technology)을 선택할 수 있다. 2차원 라이다(2D LiDAR)는 하나의 스캔 평면(Scanning Plane)에서 거리 측정을 제공하여 기본적인 장애물 검출이나 위치 추정에 사용할 수 있으며, 3차원 라이다(3D LiDAR)는 수직 및 수평 방향을 포함하는 공간 점군(Point Cloud)을 생성한다. 고체형 또는 소형 스캐닝 장치(Solid-State or Compact Scanning Device)는 휴머노이드에 적합할 수 있다. 휴머노이드에서는 많은 이동 로봇 플랫폼보다 헤드 내부 공간, 중량, 진동 내성(Vibration Tolerance), 음향 소음(Acoustic Noise), 외관 등이 더 엄격한 패키징 제약을 갖기 때문이다.
+
+전기적 인터페이스(Electrical Interface)는 센서 기동(Startup), 지속적인 동작, 내부 레이저 또는 스캐닝 전자회로에 충분한 여유를 갖는 안정적인 전원 공급원을 제공해야 한다. 전용 전원 조정(Power Regulation)과 필터링(Filtering)은 관절 액추에이터(Joint Actuator), 모터 드라이브(Motor Drive), DC-DC 컨버터, 디스플레이 및 기타 고전류 부하(High-Current Load)에서 발생하는 교란을 라이다로부터 격리할 수 있다. 전원 모니터링(Power Monitoring)을 추가하면 비정상적인 전류 소비를 감지하고 로봇 제어기가 센서 고장을 통신 또는 소프트웨어 고장과 구분할 수 있다.
+
+라이다 데이터는 일반적으로 기존의 저속 제어 센서보다 높은 대역폭의 통신 경로를 필요로 한다. 이더넷(Ethernet)은 라이다와 인지 컴퓨터(Perception Computer) 사이에서 점군, 상태 정보(Status Information), 구성 명령(Configuration Command), 진단 데이터를 전달하는 데 적합하다. 선택된 네트워크 아키텍처는 지속 데이터 전송률(Sustained Data Rate), 패킷 지연(Packet Latency), 커넥터 신뢰성(Connector Reliability), 케이블 길이, 전자파 적합성(Electromagnetic Compatibility), 스위치 용량 및 카메라와 기타 인지 장치에서 발생하는 추가 트래픽을 고려해야 한다.
+
+카메라 영상, IMU 데이터, 관절 위치(Joint Position) 또는 로봇 동작 추정값(Robot Motion Estimate)과 라이다 측정값을 결합할 때는 정밀한 시간 동기화(Time Synchronization)가 필수적이다. 휴머노이드가 헤드를 회전시키거나 몸 전체를 움직이는 동안 라이다 스캔이 생성될 수 있으므로 서로 다른 점들이 약간 다른 로봇 자세를 나타낼 수 있다. 정확한 타임스탬프(Timestamp)와 공통 시간 기준(Common Time Reference)을 사용하면 인지 소프트웨어가 이러한 움직임을 보상하고 일관된 공간 표현(Spatial Representation) 안에서 측정값을 정렬할 수 있다.
+
+정밀 시간 프로토콜(Precision Time Protocol)을 사용하는 네트워크 기반 동기화(Network-Based Synchronization)는 하드웨어가 지원하는 경우 라이다, 인지 컴퓨터, 카메라 및 기타 이더넷 연결 센서 사이에 공유 클록(Shared Clock)을 설정할 수 있다. 일부 시스템에서는 동기화 펄스(Synchronization Pulse) 또는 전용 트리거 신호(Trigger Signal)를 추가로 사용할 수도 있다. 전기전자 아키텍처는 스위치와 게이트웨이를 통과하는 과정에서도 시간 정확도를 유지하여 센서 데이터가 분산형 휴머노이드 통신 시스템을 통해 이동할 때 동기화 품질이 손실되지 않도록 해야 한다.
+
+기하학적 보정(Geometric Calibration)은 라이다의 위치와 방향을 휴머노이드 좌표계(Humanoid Coordinate System)에 대해 정의한다. 라이다 좌표계(LiDAR Frame), 헤드 좌표계(Head Frame), 몸통 좌표계(Torso Frame), 카메라 좌표계(Camera Frame), 로봇 베이스 좌표계(Robot Base Frame) 사이의 변환 관계를 정확하게 알아야 센서 융합(Sensor Fusion)을 수행할 수 있다. 휴머노이드 헤드는 몸통과 독립적으로 움직일 수 있으므로 라이다 관측값을 전역 좌표계(Global Coordinate Frame) 또는 신체 중심 좌표계(Body-Centered Coordinate Frame)로 변환할 때 관절 엔코더 정보(Joint Encoder Information)와 운동학 모델(Kinematic Model)도 함께 사용해야 한다.
+
+카메라-라이다 보정(Camera-to-LiDAR Calibration)은 시각적 의미 정보(Visual Semantics)와 기하학적 깊이(Geometric Depth)를 결합하는 인지 기능에서 특히 중요하다. 카메라 영상은 객체, 표면, 사람 또는 장면 특성을 식별할 수 있으며, 라이다는 대응 영역에 대한 정확한 공간 측정값을 제공한다. 신뢰성 있는 융합을 위해서는 보정된 내부 파라미터(Intrinsic Parameter)와 외부 파라미터(Extrinsic Parameter), 동기화된 데이터 획득, 일관된 좌표 변환(Coordinate Transformation)이 필요하며, 이를 통해 영상 특징과 3차원 점이 동일한 물리적 위치를 나타내도록 해야 한다.
+
+움직이는 헤드는 하네스와 커넥터(Harness and Connector)에 상당한 요구사항을 발생시킨다. 전원 및 고속 통신 케이블은 카메라, 마이크, 디스플레이 및 제어 배선과 함께 목을 통과할 수 있다. 반복적인 요(Yaw), 피치(Pitch), 그리고 경우에 따라 롤(Roll) 움직임은 이러한 케이블에 지속적인 굽힘 및 비틀림 응력(Bending and Torsional Stress)을 가한다. 따라서 유연 케이블 구간(Flexible Cable Section), 적절한 굽힘 반경(Bend Radius), 스트레인 릴리프(Strain Relief), 차폐(Shielding), 기계적으로 견고한 커넥터가 장기간 라이다 가용성을 유지하는 데 중요하다.
+
+전자파 적합성(EMC)은 라이다 통신 전자회로가 모터 드라이브, 스위칭 레귤레이터(Switching Regulator), 고속 카메라 링크, 무선 시스템 및 기타 잠재적인 잡음원(Noise Source) 가까이에서 동작하기 때문에 고려해야 한다. 차동 통신(Differential Communication), 적절한 케이블 차폐, 제어된 접지(Controlled Grounding), 잡음이 많은 전력 도체와의 물리적 분리는 데이터 무결성(Data Integrity)을 보호하는 데 도움이 된다. 또한 고속 라이다 인터페이스가 휴머노이드 헤드 내부에서 중요한 전자파 방사원(Electromagnetic Emission Source)이 되지 않도록 설계해야 한다.
+
+기계적 진동과 충격(Mechanical Vibration and Shock)은 라이다 신뢰성과 기하학적 정확도 모두에 영향을 줄 수 있다. 보행, 달리기, 급정지, 조작, 환경과의 접촉 및 넘어짐은 휴머노이드 구조물을 통해 센서로 기계적 에너지를 전달할 수 있다. 장착 구조(Mounting Assembly)는 지정된 진동 및 충격 한계 내에서 센서를 보호하면서 반복 가능한 센서 자세(Sensor Pose)를 유지해야 한다. 지나치게 유연한 진동 격리는 보정값에 대한 제어되지 않은 변화를 발생시킬 수 있으므로 피해야 한다.
+
+휴머노이드 헤드 내부의 열 조건(Thermal Condition)도 라이다 동작에 영향을 줄 수 있다. 센서는 카메라, 인지 전자장치, 통신 장치, 디스플레이 및 오디오 구성요소와 제한된 인클로저 공간을 공유할 수 있다. 이러한 장치에서 발생하는 열은 내부 온도를 상승시키고 거리 측정 성능이나 센서 수명에 영향을 줄 수 있다. 따라서 열 모니터링(Thermal Monitoring), 전도성 열 경로(Conductive Thermal Path), 환기(Ventilation), 적절한 배치를 전체 헤드 전기전자 및 기계 아키텍처와 함께 조정해야 한다.
+
+라이다 진단(LiDAR Diagnostics)은 통신 상태, 프레임 또는 스캔 속도, 내부 온도, 동기화 상태, 공급 전압, 패킷 오류, 센서가 보고하는 고장 상태를 지속적으로 평가해야 한다. 인지 소프트웨어는 추가적으로 점군 밀도(Point-Cloud Density), 예상하지 못한 측정 손실, 지속적인 사각 영역(Blind Region), 비현실적인 거리값을 모니터링할 수 있다. 전기적 진단과 데이터 품질 모니터링(Data-Quality Monitoring)을 결합하면 하드웨어 고장, 오염, 가림, 환경적 영향 및 통신 문제를 구분하는 능력을 향상시킬 수 있다.
+
+광학창(Optical Window)의 오염은 전기적 서브시스템이 정상적으로 동작하더라도 거리 측정 성능을 크게 저하시킬 수 있다. 먼지, 지문, 물방울, 응결 또는 물리적 손상은 송신 및 수신되는 광 에너지를 감소시킬 수 있다. 장시간 운용을 목적으로 하는 휴머노이드는 라이다 광학창에 대한 검사 및 유지보수 절차를 갖추어야 하며, 진단 알고리즘은 청소 또는 정비가 필요한 상태를 나타내는 지속적인 성능 저하 패턴을 식별할 수 있어야 한다.
+
+라이다가 사람과 공유하는 환경에서 동작하기 때문에 안전 고려사항(Safety Consideration)이 특히 중요하다. 선택된 센서는 의도된 운용 조건에 적용되는 광학 안전 요구사항(Optical Safety Requirement)을 충족해야 하며, 기계적 통합은 개조나 손상으로 인해 의도하지 않은 노출 조건이 발생하지 않도록 해야 한다. 시스템 안전 아키텍처(System Safety Architecture)는 라이다의 손실 또는 성능 저하가 로봇 속도, 보호 기능(Protective Function), 내비게이션 동작 및 지속적인 운용에 어떤 영향을 미치는지도 정의해야 한다.
+
+중복성(Redundancy)은 반드시 동일한 라이다 센서를 두 개 설치하는 것을 의미하지 않는다. 휴머노이드 인지 아키텍처는 라이다와 카메라, 깊이 센서, 근접 센싱(Proximity Sensing), 힘 센싱(Force Sensing) 및 기타 센싱 방식을 결합하여 하나의 센싱 채널에 장애가 발생하더라도 환경 인지 기능이 즉시 사라지지 않도록 할 수 있다. 필요한 중복성 수준은 단순히 설치된 센서의 수가 아니라 요구되는 안전 및 운용 기능을 기준으로 결정해야 한다.
+
+인지 컴퓨터(Perception Computer)는 원시 라이다 측정값을 상위 수준의 지능 기능에 사용할 수 있는 표현으로 변환한다. 점군은 필터링, 움직임 보상(Motion Compensation), 분할, 정합(Registration), 좌표 변환을 거쳐 점유 지도(Occupancy Map), 기하학적 모델, 객체 추적(Object Tracking) 또는 위치 추정 특징(Localization Feature)으로 변환될 수 있다. 이러한 출력은 동시적 위치 추정 및 지도 작성(SLAM), 충돌 회피(Collision Avoidance), 경로 계획(Path Planning), 조작, 사람 추적(Human Tracking), 그리고 물리적 환경에 대한 신뢰성 있는 3차원 이해를 요구하는 체화형 인공지능(Embodied AI) 기능을 지원할 수 있다.
+
+확장 가능한 라이다 아키텍처(Scalable LiDAR Architecture)는 가능한 범위에서 센서의 물리적 설치와 상위 수준의 인지 소프트웨어를 분리해야 한다. 표준화된 전원 인터페이스, 이더넷 연결, 동기화된 타임스탬프, 명확하게 정의된 좌표계, 저장된 보정 파라미터, 모듈형 장치 구성(Modular Device Configuration)을 적용하면 센서 교체와 향후 업그레이드가 쉬워진다. 이를 통해 새로운 라이다 기술을 휴머노이드의 인지 및 컴퓨팅 아키텍처 전체를 근본적으로 재설계하지 않고도 도입할 수 있다.
+
+시스템 수준에서 라이다는 독립적인 거리 측정 장치가 아니라 동기화된 다중 센서 인지 체인(Multi-Sensor Perception Chain)의 일부로 취급해야 한다. 라이다의 가치는 안정적인 전원, 결정론적 통신(Deterministic Communication), 정확한 시간 동기화, 안정적인 기계적 정렬, 보정, 진단, 카메라 배열, IMU, 관절 센싱 및 인지 컴퓨터와의 통합에 의해 결정된다. 이러한 요소들이 함께 구성될 때 원시 거리 측정값은 휴머노이드가 3차원 물리 환경을 이해하고 안전하게 상호작용할 수 있도록 하는 공간 인식(Spatial Awareness)으로 발전한다.
+
+## 08.03. Microphone Array
+
+![](images/image3.png){width="7.268055555555556in" height="7.268055555555556in"}
+
+휴머노이드 마이크 배열(Microphone Array)은 로봇과 주변 음향 환경(Acoustic Environment) 사이를 연결하는 청각 센싱 인터페이스(Auditory Sensing Interface)를 제공한다. 헤드(Head) 주변에 분산 배치된 여러 개의 마이크로폰을 통해 로봇은 음성, 환경음, 경보음, 기계음 및 기타 음향 이벤트를 다양한 방향에서 수집할 수 있다. 단일 마이크로폰과 달리 마이크 배열은 여러 마이크로폰 사이의 공간적 차이를 활용하여 음원의 방향(Sound Direction)을 추정하고, 음성 명료도(Speech Intelligibility)를 향상시키며, 원하는 화자의 음성과 배경 잡음을 분리할 수 있다.
+
+마이크로폰의 물리적 배치(Physical Arrangement)는 음향 성능에 큰 영향을 미친다. 넓은 공간적 커버리지(Spatial Coverage)를 확보하기 위해 헤드의 전면, 측면, 상부 또는 하부 영역에 마이크로폰을 분산 배치할 수 있다. 마이크로폰 요소 사이의 간격은 공간 처리에 사용할 수 있는 주파수 범위를 결정하며, 각 마이크로폰의 상대적 위치(Relative Position)는 정확하게 알려져 있어야 한다. 기계적 대칭성(Mechanical Symmetry)은 신호 처리(Signal Processing)를 단순화할 수 있지만, 실제 배치에서는 카메라, 스피커, 디스플레이, 구조 부품, 환기구 및 휴머노이드 헤드의 외형도 함께 고려해야 한다.
+
+마이크로폰 선택(Microphone Selection)에서는 감도(Sensitivity), 주파수 응답(Frequency Response), 자체 잡음(Self-Noise), 동적 범위(Dynamic Range), 최대 음압 레벨(Maximum Sound-Pressure Level), 소비전력(Power Consumption), 패키지 크기(Package Size), 인터페이스 유형(Interface Type)을 고려해야 한다. 디지털 MEMS 마이크로폰(Digital MEMS Microphone)은 일정한 특성, 작은 크기, 직접적인 디지털 인터페이스를 제공할 수 있기 때문에 소형 휴머노이드 설계에 적합하다. 아날로그 마이크로폰(Analog Microphone)은 중앙 집중식 아날로그 프런트엔드(Analog Front-End) 처리가 필요한 경우에도 사용할 수 있다. 선택된 아키텍처는 배열 전체에서 위상(Phase) 및 진폭(Amplitude) 특성의 일관성을 유지해야 한다.
+
+마이크로폰 전기 인터페이스(Electrical Interface)는 낮은 수준의 오디오 신호(Low-Level Audio Signal)가 전기적 간섭(Electrical Interference)에 매우 민감하기 때문에 깨끗하고 안정적인 전원을 공급해야 한다. 스위칭 레귤레이터(Switching Regulator), 모터 드라이버(Motor Driver), DC-DC 컨버터, 디스플레이, 무선 통신 장치 및 고속 프로세서는 오디오 서브시스템에 전도성 또는 방사성 잡음(Conducted or Radiated Noise)을 유입시킬 수 있다. 로컬 전원 조정(Local Regulation), 필터링(Filtering), 적절한 접지(Grounding), 전원 도메인 분리(Power-Domain Separation), 신중한 리턴 전류 설계(Return-Current Design)를 통해 이러한 간섭이 가청 잡음으로 변하거나 디지털 오디오 스트림을 오염시키는 것을 줄일 수 있다.
+
+마이크 배열은 여러 채널을 결정론적인 시간 기준으로 수집하기 위한 적절한 데이터 획득 아키텍처(Data-Acquisition Architecture)를 필요로 한다. 디지털 마이크로폰은 PDM과 같은 인터페이스를 사용할 수 있으며, 다른 구현에서는 I2S, TDM, USB 오디오 또는 전용 오디오 변환기(Audio Converter)를 사용할 수 있다. 아키텍처는 서로 다른 마이크로폰 위치의 신호가 정확하게 정렬된 상태를 유지하도록 채널 식별(Channel Identity)과 타이밍(Timing)을 보존해야 한다. 잘못된 채널 매핑(Channel Mapping)이나 가변 지연시간(Variable Latency)은 빔포밍(Beamforming)과 음원 위치 추정(Sound Localization)의 효과를 크게 감소시킬 수 있다.
+
+시간 동기화(Time Synchronization)는 공간 오디오 처리(Spatial Audio Processing)에서 특히 중요하다. 빔포밍과 도래 방향 추정(Direction-of-Arrival Estimation)은 서로 다른 마이크로폰에 음향이 도달하는 데 발생하는 매우 작은 시간 차이에 의존한다. 따라서 모든 채널은 안정적인 샘플링 클록(Sampling Clock) 또는 정밀하게 제어되는 동기화 메커니즘(Synchronization Mechanism)을 공유해야 한다. 클록 드리프트(Clock Drift), 샘플링 속도 불일치(Sample-Rate Mismatch), 비동기 획득(Asynchronous Acquisition)은 위상 오차(Phase Error)를 발생시켜 위치 추정 정확도를 낮추고 음성 향상 과정에서 원하지 않는 왜곡을 발생시킬 수 있다.
+
+빔포밍(Beamforming)은 여러 마이크로폰의 신호를 결합하여 특정 방향에서 도달하는 음향을 강조하고 다른 방향에서 오는 음향을 억제한다. 휴머노이드는 적응형 빔포밍(Adaptive Beamforming)을 사용하여 로봇 전방에서 말하는 사람에게 청취 방향을 집중시키면서, 로봇이 헤드를 회전시키거나 다른 화자를 식별할 때 청취 방향을 변경할 수 있다. 빔포밍 전략은 마이크로폰 배열의 기하학적 구조, 음향 환경, 로봇의 움직임 및 인지 시스템에서 사용할 수 있는 계산 자원을 고려해야 한다.
+
+음원 위치 추정(Sound Localization)은 휴머노이드가 음향 이벤트가 발생한 위치를 추정할 수 있도록 한다. 도착 시간 차이(Time Difference of Arrival), 위상 정보(Phase Information), 신호 상관(Signal Correlation), 학습 기반 음향 모델(Learned Acoustic Model)을 이용하는 기법을 통해 화자 또는 다른 음원의 방향을 추정할 수 있다. 카메라 및 라이다(LiDAR) 정보와 결합하면 추정된 음향 방향을 실제 사람이나 물체와 연결할 수 있다. 이러한 다중 모달 연계(Multimodal Association)를 통해 로봇은 화자를 향해 시선을 돌리고, 현재 상호작용 중인 사람을 식별하며, 상호작용 중 공간 인식(Spatial Awareness)을 유지할 수 있다.
+
+헤드 자체가 음향 시스템의 일부가 되는데, 그 기계적 표면이 반사(Reflection), 회절(Diffraction), 감쇠(Attenuation)를 발생시키기 때문이다. 얼굴, 귀, 하우징, 카메라, 스피커 및 기타 구조물은 각 마이크로폰 주변의 음장을 변화시킬 수 있다. 따라서 마이크로폰 배치는 단순히 기하학적 대칭성에 의존하기보다 음향 시뮬레이션(Acoustic Simulation)과 실제 측정을 통해 평가해야 한다. 최종 보정(Calibration)은 독립적인 마이크로폰 모듈이 아니라 실제 조립된 헤드의 특성을 기준으로 수행해야 한다.
+
+스피커와 마이크로폰의 배치는 음향 피드백(Acoustic Feedback)을 방지하도록 함께 설계해야 한다. 휴머노이드가 스피커를 통해 음성이나 기타 소리를 출력하면 해당 신호가 자체 마이크로폰에 다시 수집되어 외부에서 발생한 음성으로 잘못 해석될 수 있다. 에코 제거(Echo Cancellation), 음향 에코 제어(Acoustic Echo Control), 이득 관리(Gain Management), 적절한 물리적 분리를 통해 이러한 문제를 줄일 수 있다. 오디오 아키텍처는 스피커 경로에서 기준 신호(Reference Signal)를 제공하여 처리 시스템이 예측 가능한 음향 피드백을 추정하고 제거할 수 있도록 해야 한다.
+
+마이크 배열은 환경 잡음(Environmental Noise)이 존재하는 상황에서도 효과적으로 동작해야 한다. 휴머노이드는 모터, 팬, HVAC 시스템, 차량, 사람, 기계 또는 다른 로봇 주변에서 동작할 수 있다. 잡음 억제(Noise Suppression)는 공간 필터링(Spatial Filtering), 스펙트럼 처리(Spectral Processing), 적응형 알고리즘(Adaptive Algorithm), 학습 기반 모델(Learned Model)을 결합하여 음성 인식 성능을 향상시킬 수 있다. 그러나 과도한 잡음 제거는 중요한 환경음을 제거할 수 있으므로 안전과 상황 인식에 필요한 음향 정보는 보존해야 한다.
+
+음향 인지(Acoustic Perception)는 음성 인식 이상의 기능을 지원할 수 있다. 마이크 배열은 경보음, 충격음, 비정상적인 기계음, 사람의 활동, 접근하는 물체 또는 주변 음향 환경의 변화를 감지할 수 있다. 따라서 음향 이벤트 검출(Acoustic Event Detection)은 시각 및 기하학적 센서를 보완할 수 있다. 일부 상황에서는 카메라의 현재 시야 밖에서 발생하는 이벤트를 소리가 먼저 알려줄 수 있으며, 이를 통해 휴머노이드는 관련 위치로 주의를 전환할 수 있다.
+
+마이크 서브시스템은 헤드 아키텍처에 정의된 인지 컴퓨터(Perception Computer)와 명확하게 정의된 오디오 처리 파이프라인(Audio Processing Pipeline)을 통해 통합되어야 한다. 원시 다중 채널 오디오(Raw Multi-Channel Audio)는 동기화, 필터링, 빔포밍, 잡음 감소(Noise Reduction)를 수행한 후 자동 음성 인식(Automatic Speech Recognition), 음향 분류(Sound Classification), 화자 식별(Speaker Identification), 멀티모달 AI 모델(Multimodal AI Model)에 필요한 특징 또는 스트림으로 변환할 수 있다. 처리 기능은 지연시간, 대역폭, 소비전력 및 계산 요구사항의 균형을 맞추기 위해 로컬 오디오 하드웨어와 메인 인지 컴퓨터 사이에 분산할 수 있다.
+
+전자파 적합성(Electromagnetic Compatibility)은 마이크 배열이 휴머노이드에서 가장 잡음에 민감한 영역 중 하나에서 동작하기 때문에 중요하다. 고전류 액추에이터 배선과 스위칭 전원 회로는 가능한 범위에서 마이크로폰 배선 및 오디오 케이블과 물리적으로 분리해야 한다. 차동 신호(Differential Signaling), 차폐(Shielding), 제어된 접지(Controlled Grounding), 신중한 커넥터 설계를 통해 간섭에 대한 민감도를 줄일 수 있다. 헤드 하네스는 반복적인 기계적 움직임으로 인해 간헐적인 전기 연결이 발생하여 오디오 잡음으로 나타나는 현상도 방지해야 한다.
+
+열적 및 기계적 고려사항(Thermal and Mechanical Consideration)은 장기간의 마이크 성능에 영향을 미친다. 개별 마이크로폰은 일반적으로 적은 전력을 소비하지만, 인접한 프로세서, 디스플레이, 통신 장치 및 기타 전자장치가 헤드 내부 온도를 상승시킬 수 있다. 온도 변화는 마이크로폰의 특성과 전자 잡음(Electronic Noise)에 영향을 줄 수 있다. 보행, 관절 작동 또는 충격으로 발생하는 기계적 진동도 마이크로폰에 전달되어 원하지 않는 저주파 신호를 생성할 수 있으므로 구조적 격리(Structural Isolation)와 진동을 고려한 신호 처리(Vibration-Aware Signal Processing)가 중요하다.
+
+마이크 배열은 상태 모니터링(Health Monitoring)과 진단(Diagnostic) 기능을 포함해야 한다. 시스템은 채널 가용성(Channel Availability), 신호 진폭(Signal Amplitude), 잡음 바닥(Noise Floor), 클리핑(Clipping), 비정상적인 DC 레벨, 동기화 상태, 통신 오류 및 비정상적인 스펙트럼 특성(Abnormal Spectral Characteristics)을 모니터링할 수 있다. 여러 마이크로폰 채널을 비교하면 하나의 채널에서 다른 채널과 크게 다른 동작이 나타나는 경우 막힘, 단선, 손상 또는 성능 저하가 발생한 마이크로폰을 식별하는 데 도움이 된다. 진단 정보는 인지 컴퓨터와 유지보수 시스템에서 사용할 수 있어야 한다.
+
+보정(Calibration)은 마이크 배열과 휴머노이드의 공간 좌표계(Spatial Coordinate System) 사이의 관계를 설정한다. 각 마이크로폰의 물리적 위치는 정확하게 기록되어야 하며, 음향 보정(Acoustic Calibration)을 통해 감도 차이, 위상 관계, 주파수 응답 및 방향성 특성(Directional Effect)을 특성화할 수 있다. 보정 데이터는 특정 헤드 어셈블리(Head Assembly)와 연결되어야 하며, 이를 통해 마이크로폰 모듈을 교체하더라도 음원 위치 추정이나 빔포밍 성능이 의도하지 않게 무효화되지 않도록 해야 한다.
+
+마이크 배열은 헤드 아키텍처에 정의된 카메라 배열(Camera Array), 라이다(LiDAR) 및 기타 인지 센서와 결합될 때 특히 강력한 기능을 제공한다. 음향 방향 정보는 시각적 주의(Visual Attention)를 유도할 수 있으며, 시각적 인식(Visual Recognition)은 어느 사람이 말하고 있는지를 식별할 수 있다. 라이다는 추정된 음원의 기하학적 맥락(Geometric Context)을 제공할 수 있으며, 인지 컴퓨터는 이러한 여러 센서 정보를 공통 공간 표현(Common Spatial Representation)으로 결합할 수 있다. 이를 통해 청각과 시각이 지속적으로 서로를 보완하는 오디오-비주얼 인지 루프(Audio-Visual Perception Loop)를 형성할 수 있다.
+
+확장 가능한 마이크 아키텍처(Scalable Microphone Architecture)는 헤드 전체를 재설계하지 않고도 추가 마이크로폰이나 향상된 오디오 처리 하드웨어를 도입할 수 있어야 한다. 표준화된 인터페이스(Standardized Interface), 안정적인 클록(Stable Clocking), 모듈형 하네스 연결(Modular Harness Connection), 저장된 보정 파라미터(Stored Calibration Parameter), 소프트웨어 정의 채널 식별(Software-Defined Channel Identification)은 향후 업그레이드를 지원한다. 휴머노이드 상호작용이 더욱 자연스러워짐에 따라 마이크 배열은 단순한 음성 입력 장치에서 음원 위치 추정, 환경 이해(Environmental Understanding), 인간 상호작용, 체화형 인공지능(Embodied AI)을 지원하는 분산형 음향 인지 시스템(Distributed Acoustic Perception System)으로 발전할 수 있다.
+
+## 08.04. Speaker System
+
+![](images/image4.png){width="7.268055555555556in" height="7.268055555555556in"}
+
+휴머노이드 스피커 시스템(Speaker System)은 로봇과 사람 또는 주변 환경 사이에서 주요 음향 출력 인터페이스(Acoustic Output Interface)를 제공한다. 헤드 및 인지 아키텍처(Head and Perception Architecture)에 통합되어 인지 컴퓨터(Perception Computer)에서 생성된 디지털 오디오(Digital Audio)를 제어된 음향 에너지(Acoustic Energy)로 변환하여 음성, 경보, 피드백 사운드(Feedback Sound), 상호작용 동작(Interactive Behavior)에 사용한다. 따라서 스피커 시스템은 단순한 오디오 출력 장치가 아니라 전기적, 음향적, 기계적, 소프트웨어적으로 통합된 서브시스템으로 취급해야 한다.
+
+스피커 배치(Speaker Placement)는 음성 명료도(Intelligibility), 음향 커버리지(Acoustic Coverage), 상호작용 품질(Interaction Quality)에 큰 영향을 미친다. 사람의 자연스러운 청취 경험을 제공하기 위해 스피커를 얼굴, 귀, 턱 또는 헤드의 다른 영역에 배치하여 휴머노이드의 전방 또는 측면에 있는 사람에게 음향을 전달할 수 있다. 인클로저 형상(Enclosure Geometry), 스피커 방향, 그릴 구조(Grille Structure), 주변 기계 부품은 주파수 응답(Frequency Response)과 지향성(Directivity)에 영향을 미친다. 또한 배치 과정에서 마이크로폰, 카메라, 디스플레이, 환기 경로 및 헤드 내부에서 사용 가능한 공간을 함께 고려해야 한다.
+
+스피커 선택(Speaker Selection) 과정에서는 출력 전력(Output Power), 주파수 응답, 감도(Sensitivity), 임피던스(Impedance), 최대 음압 레벨(Maximum Sound-Pressure Level), 왜곡(Distortion), 효율(Efficiency), 물리적 크기, 질량(Mass), 열 특성(Thermal Characteristics)을 고려해야 한다. 소형 풀레인지 스피커(Full-Range Speaker)는 음성 중심의 소형 시스템에 적합할 수 있으며, 여러 드라이버를 사용하면 주파수 재현과 음향 커버리지를 향상시킬 수 있다. 전기전자 아키텍처는 선택된 스피커의 특성을 적절한 증폭기(Amplifier)와 일치시켜 과도한 왜곡이나 열적 스트레스(Thermal Stress) 없이 가용 출력 전력을 효율적으로 사용해야 한다.
+
+증폭기 및 오디오 전력단(Audio Power Stage)은 스피커 출력에 따라 빠르게 변화하는 전류 요구량을 발생시킬 수 있으므로 안정적인 전원을 필요로 한다. 모터 드라이브, 스위칭 컨버터(Switching Converter), 디스플레이 및 기타 고전류 부하는 오디오 전원 도메인(Audio Power Domain)에 전기적 교란을 유입시킬 수 있다. 로컬 전원 조정(Local Power Regulation), 필터링(Filtering), 접지(Grounding), 고전류 액추에이터 회로와 오디오 전자장치 사이의 적절한 분리는 가청 간섭(Audible Interference)을 줄이는 데 도움이 된다. 전원 모니터링(Power Monitoring)은 비정상적인 전류 소비나 증폭기 고장을 식별하는 데에도 사용할 수 있다.
+
+인지 컴퓨터에서 전달되는 디지털 오디오는 스피커 증폭기에 도달하기 전에 제어된 오디오 처리 체인(Audio Processing Chain)을 거쳐야 한다. 이 파이프라인에는 샘플레이트 변환(Sample-Rate Conversion), 이퀄라이제이션(Equalization), 동적 범위 제어(Dynamic-Range Control), 볼륨 관리(Volume Management), 디지털 필터링(Digital Filtering), 믹싱(Mixing), 보호 기능(Protection Function)이 포함될 수 있다. 오디오 시스템은 예측 가능한 지연시간(Latency)을 유지하여 생성된 음성과 상호작용 응답이 로봇의 시각적 동작, 제스처, 얼굴 디스플레이 및 기타 물리적 동작과 동기화되도록 해야 한다.
+
+휴머노이드가 마이크 배열(Microphone Array)과 스피커 시스템을 모두 포함하는 경우 음향 피드백(Acoustic Feedback)은 중요한 문제가 된다. 로봇 자체의 음성이 마이크로폰에 다시 수집되어 외부 음성으로 잘못 해석될 수 있기 때문이다. 음향 에코 제거(Acoustic Echo Cancellation)는 스피커 기준 신호(Speaker Reference Signal)를 사용하여 마이크로폰에 도달하는 소리를 추정하고 예측 가능한 성분을 억제할 수 있다. 따라서 스피커 배치, 인클로저 설계, 마이크로폰 형상, 적응형 필터링(Adaptive Filtering), 이득 제어(Gain Control)를 하나의 통합된 오디오 상호작용 시스템으로 함께 설계해야 한다.
+
+스피커 시스템은 다양한 환경 조건에서 명확한 음성을 제공할 수 있어야 한다. 휴머노이드는 조용한 실내, 사무실, 공장, 공공장소 또는 기계와 사람이 존재하는 공간에서 동작할 수 있다. 자동 이득 제어(Automatic Gain Control), 이퀄라이제이션, 잡음 인식 기반 볼륨 관리(Noise-Aware Volume Management), 적절한 지향성을 통해 음성 명료도를 유지할 수 있다. 그러나 단순히 볼륨을 증가시키는 것만으로는 충분하지 않으며, 과도한 음향 출력은 불쾌감을 유발하고 에코를 증가시키며 인간-로봇 상호작용의 자연스러운 품질을 저하시킬 수 있다.
+
+공간 오디오(Spatial Audio)는 방향성과 현장감에 대한 인식을 더욱 향상시킬 수 있다. 여러 스피커를 제어된 진폭과 위상 관계(Phase Relationship)로 구동하면 더 넓은 음향 영역이나 방향성 있는 출력을 생성할 수 있다. 로봇은 카메라, 라이다(LiDAR) 또는 마이크 배열을 통해 추정된 사람의 위치에 따라 오디오 표현(Audio Presentation)을 조정할 수 있다. 이를 통해 휴머노이드는 상호작용 상대방을 향해 음성을 전달하면서 다른 방향으로 불필요하게 방사되는 음향 에너지를 줄일 수 있다.
+
+스피커 인클로저(Enclosure)는 음향 설계의 일부이며 기계적 헤드 구조와 함께 고려해야 한다. 내부 공간, 장착 브래킷(Mounting Bracket), 감쇠 재료(Damping Material), 개구부(Opening), 보호 그릴(Protective Grille)은 공진(Resonance)과 주파수 응답을 크게 변화시킬 수 있다. 액추에이터에서 발생하는 기계적 진동도 스피커 구조에 전달되어 원하지 않는 잡음을 발생시킬 수 있다. 견고한 장착, 음향 감쇠, 구조적 격리(Structural Isolation), 신중하게 설계된 음향 경로(Acoustic Path)를 통해 휴머노이드가 움직이는 동안에도 일관된 출력 품질을 유지할 수 있다.
+
+전자파 적합성(Electromagnetic Compatibility)은 오디오 증폭기와 스피커 배선이 스위칭 레귤레이터, 모터 드라이버, 고속 통신 링크, 카메라 및 무선 시스템과 가까이에서 동작하기 때문에 중요하다. 차동 오디오 인터페이스(Differential Audio Interface), 적절한 차폐(Shielding), 제어된 접지(Controlled Grounding), 신중한 케이블 배선을 통해 전기적 잡음에 대한 민감도를 줄일 수 있다. 스피커 케이블은 급격하게 변화하는 모터 전류가 자기 결합(Magnetic Coupling)이나 전도성 결합(Conducted Coupling)을 통해 가청 간섭을 발생시키지 않도록 배치해야 한다.
+
+스피커 출력 전력이 증가할수록 열 관리(Thermal Management)의 중요성도 증가한다. 증폭기, 전력 변환 회로(Power Conversion Circuitry), 스피커 보이스 코일(Voice Coil)은 지속적인 동작 중에 열을 발생시킬 수 있다. 소형 휴머노이드 헤드 내부에 열이 축적되면 전자장치의 신뢰성과 음향 특성에 영향을 줄 수 있다. 따라서 스피커 시스템이 높은 출력 수준에서 장시간 동작하도록 설계되는 경우 온도 모니터링, 전도성 열 경로, 환기, 증폭기 보호 및 적절한 출력 디레이팅(Power Derating)을 포함해야 한다.
+
+스피커 서브시스템은 진단 및 보호 기능(Diagnostic and Protection Function)을 제공해야 한다. 유용한 모니터링 파라미터에는 증폭기 온도, 공급 전압, 출력 전류, 클리핑(Clipping), 과부하(Overload), 통신 상태 및 검출된 하드웨어 고장이 포함된다. 보호 메커니즘은 비정상적인 조건이 발생하면 출력 전력을 감소시키거나 영향을 받은 채널을 비활성화할 수 있다. 진단 정보는 인지 컴퓨터와 유지보수 시스템에서 사용할 수 있어야 하며, 이를 통해 오디오 고장과 소프트웨어 구성 문제 또는 외부 음향 조건을 구분할 수 있어야 한다.
+
+스피커 시스템은 사람과의 안전하고 예측 가능한 상호작용도 지원해야 한다. 최대 출력 수준은 운용 환경에 따라 제어되어야 하며, 갑작스럽고 예상하지 못한 음향 이벤트도 적절하게 관리해야 한다. 경고음(Warning Tone), 비상 알림(Emergency Notification), 음성 출력, 일반적인 상호작용 사운드는 서로 다른 우선순위 수준(Priority Level)을 요구할 수 있다. 따라서 오디오 아키텍처에는 제어된 사운드 프로파일(Sound Profile)과 소프트웨어 정의 정책(Software-Defined Policy)을 포함하여 로봇의 서로 다른 운용 상태에서 어떤 출력 기능이 허용되는지를 결정할 수 있다.
+
+마이크 배열, 카메라 배열, 라이다 및 인지 컴퓨터와의 통합은 스피커를 단순한 출력 장치에서 멀티모달 상호작용(Multimodal Interaction)의 능동적인 구성요소로 변화시킨다. 인지 시스템은 사람을 식별하고, 위치를 추정하고, 음성을 해석하고, 적절한 응답을 선택한 다음 동기화된 오디오 출력을 생성할 수 있다. 얼굴 디스플레이 및 로봇 동작과 결합하면 스피커 시스템은 자연스러운 의사소통에 기여하고 휴머노이드가 인지하고, 판단하고, 표현하는 과정 사이에 일관된 관계를 형성하는 데 도움을 준다.
+
+확장 가능한 스피커 아키텍처(Scalable Speaker Architecture)는 모듈형 인터페이스(Modular Interface), 표준화된 오디오 연결(Standardized Audio Connection), 교체 가능한 스피커 모듈(Replaceable Speaker Module), 저장된 구성 파라미터(Configuration Parameter), 소프트웨어 제어 오디오 프로파일을 사용해야 한다. 이를 통해 헤드 전체를 다시 설계하지 않고도 향후 증폭기 기술, 스피커 성능, 공간 오디오 처리 또는 인간 상호작용 기능을 업그레이드할 수 있다. 시스템 수준에서 스피커 서브시스템은 전기적 신뢰성, 음향 품질, 열적 안정성 및 정비성을 유지하면서 음성, 경보, 피드백, 멀티모달 상호작용 및 체화형 인공지능(Embodied AI) 동작에 필요한 제어된 음향 출력을 제공한다.
+
+## 08.05. Face Display
+
+![](images/image5.png){width="7.268055555555556in" height="7.268055555555556in"}
+
+휴머노이드 얼굴 디스플레이(Face Display)는 로봇과 사람 사이의 시각적 표현 인터페이스(Visual Expression Interface)를 구성한다. 헤드 및 인지 아키텍처(Head and Perception Architecture)에서 얼굴 디스플레이는 카메라, 라이다(LiDAR), 마이크로폰, 스피커 및 인지 컴퓨터(Perception Computer)와 함께 동작하여 시각적 피드백(Visual Feedback)을 통해 로봇의 내부 상태(Internal State)를 전달한다. 단순한 일반 디스플레이로 기능하는 것이 아니라, 인식 가능한 표정, 주의 상태(Attention Cue), 상호작용 상태(Interaction State), 상태 정보를 제공하면서 휴머노이드 헤드와 전기적 및 기계적으로 통합되어야 한다.
+
+디스플레이 표면(Display Surface)은 휴머노이드 헤드의 형상과 외관을 중심으로 설계해야 한다. 의도된 캐릭터와 상호작용 방식에 따라 하나의 연속 패널(Continuous Panel), 두 개의 눈 디스플레이(Eye Display), 여러 개의 분할 디스플레이(Segmented Display), LED 소자, 마이크로LED 장치, OLED 패널 또는 소형 프로젝션 기반 메커니즘(Projection-Based Mechanism)을 사용할 수 있다. 선택된 아키텍처는 제한된 헤드 내부 공간에 적합하면서 충분한 밝기, 명암비(Contrast), 시야각(Viewing Angle), 주사율(Refresh Rate), 해상도를 제공하고 적절한 기계적 강도와 시각적 비례를 유지해야 한다.
+
+얼굴 표정(Facial Expression)은 단순한 정적 이미지를 표시하는 것 이상의 기능을 필요로 한다. 얼굴 디스플레이는 형태, 밝기, 색상, 애니메이션(Animation)을 제어하여 눈의 방향, 깜빡임, 동공 움직임, 감정 상태, 주의, 확인, 불확실성, 경고 및 기타 상호작용 신호를 표현할 수 있다. 렌더링 시스템(Rendering System)은 부드러운 전환과 예측 가능한 타이밍을 유지하여 시각적 표현이 음성, 헤드 움직임, 제스처 및 로봇의 행동 상태와 자연스럽게 대응하도록 해야 한다. 지나치게 빠르거나 복잡한 애니메이션은 사용자의 주의를 방해하거나 처리량과 소비전력을 증가시킬 수 있으므로 피해야 한다.
+
+전기전자 아키텍처는 디스플레이 전자장치에 안정적이고 적절하게 조정된 전원(Stable and Regulated Power)을 공급해야 한다. 디스플레이 패널, LED 드라이버, 타이밍 컨트롤러(Timing Controller), 그래픽 프로세서 및 인터페이스 회로는 특히 밝기나 영상 콘텐츠가 변화할 때 빠르게 변하는 전류를 요구할 수 있다. 이러한 부하는 민감한 카메라, 마이크로폰 및 기타 인지 전자장치와 적절하게 분리해야 한다. 로컬 전압 조정(Local Voltage Regulation), 필터링, 전류 모니터링(Current Monitoring), 과전압 또는 열 과부하(Thermal Overload) 보호를 통해 인접한 센싱 시스템에 전기적 잡음을 유입시키지 않으면서 디스플레이 신뢰성을 유지할 수 있다.
+
+얼굴 디스플레이는 인지 컴퓨터와 디스플레이 컨트롤러(Display Controller) 사이에 고속 데이터 경로(High-Speed Data Path)를 필요로 한다. 선택된 기술에 따라 MIPI DSI, HDMI, DisplayPort, USB, SPI 또는 전용 디스플레이 인터페이스(Display Interface)를 사용할 수 있다. 통신 아키텍처는 요구되는 해상도와 주사율에 충분한 대역폭을 제공하면서 결정론적 또는 제한된 지연시간(Bounded Latency)을 유지해야 한다. 얼굴 표정이 조정된 인간-로봇 상호작용(Human-Robot Interaction)의 일부로 사용되는 경우 디스플레이 데이터는 오디오 및 동작 출력과도 동기화되어야 한다.
+
+헤드는 내부에서 열을 방출할 수 있는 공간이 제한되어 있으므로 열 관리(Thermal Management)가 특히 중요하다. 높은 디스플레이 밝기, 지속적인 애니메이션, 그래픽 처리 및 로컬 드라이버 전자장치는 상당한 열을 발생시킬 수 있다. 온도 상승은 부품 수명을 감소시키거나 디스플레이 특성을 변화시키거나 보호를 위한 밝기 감소(Protective Brightness Reduction)를 발생시킬 수 있다. 따라서 열 경로(Thermal Path), 열 확산(Heat Spreading), 환기(Ventilation), 온도 센싱(Temperature Sensing), 적절한 인클로저 재료를 얼굴 디스플레이의 광학 및 기계 설계와 함께 고려해야 한다.
+
+광학 성능(Optical Performance)은 다양한 환경에서 사용할 수 있어야 한다. 디스플레이는 어두운 실내, 밝은 공간, 창문 근처 또는 직사광선 아래에서 동작할 수 있다. 자동 밝기 제어(Automatic Brightness Control)는 주변 환경 조건에 따라 디스플레이를 조정하면서 불필요한 소비전력을 방지할 수 있다. 지나치게 높은 밝기는 부자연스럽거나 불편하게 보일 수 있으며, 대비가 부족하면 표정을 인식하기 어려울 수 있다. 따라서 시스템은 단순히 밝기를 최대화하기보다 시각적 명확성과 일관된 해석 가능성을 우선해야 한다.
+
+얼굴 디스플레이는 카메라 및 마이크로폰 시스템과 연계되어 멀티모달 상호작용(Multimodal Interaction)을 강화해야 한다. 마이크 배열(Microphone Array)이 화자를 감지하고 인지 시스템이 상호작용 상대를 식별하면 디스플레이는 눈의 움직임이나 시각적 주의(Visual Attention)를 해당 사람에게 향하도록 할 수 있다. 카메라 기반 인지(Camera-Based Perception)는 로봇이 특정 물체나 사용자를 바라보아야 하는 시점도 결정할 수 있다. 이를 통해 센싱이 주의를 결정하고, 행동 시스템이 표정을 선택하며, 디스플레이가 해당 상태를 다시 사람에게 전달하는 폐루프 상호작용(Closed Interaction Loop)을 형성할 수 있다.
+
+디스플레이 컨트롤러는 저수준 렌더링(Low-Level Rendering)과 고수준 행동 결정(High-Level Behavioral Decision)을 명확하게 분리해야 한다. 인지 또는 상호작용 컴퓨터는 청취(Listening), 발화(Speaking), 탐색(Searching), 사고(Thinking), 경고(Warning), 동작 완료(Completing an Action)와 같은 추상적인 상태를 결정하고, 전용 렌더링 계층(Rendering Layer)은 이를 시각적 요소로 변환할 수 있다. 이러한 분리는 얼굴 인터페이스를 쉽게 업데이트할 수 있도록 하며, 애플리케이션 소프트웨어가 특정 디스플레이 하드웨어나 픽셀 수준 구현에 지나치게 결합되는 것을 방지한다.
+
+자연스러운 의사소통을 위해서는 스피커 시스템과의 동기화(Synchronization)가 필수적이다. 휴머노이드가 말을 할 때 얼굴은 입 움직임, 눈의 동작 또는 기타 연동 애니메이션을 통해 로봇이 발화하고 있음을 시각적으로 나타내야 한다. 로봇이 듣고 있을 때는 주의 및 적극적인 수신 상태를 나타내도록 표정을 변경할 수 있다. 오디오 재생, 얼굴 애니메이션, 헤드 움직임 및 상호작용 상태 사이의 시간 관계는 일관되게 유지되어야 하며, 이를 통해 로봇의 동작이 지연되거나 기계적으로 분리되어 보이는 것을 방지할 수 있다.
+
+얼굴 디스플레이는 진단 및 보호 기능(Diagnostic and Protection Function)도 지원해야 한다. 시스템은 패널 온도, 공급 전압, 전류 소비, 통신 상태, 프레임 오류(Frame Error), 디스플레이 컨트롤러 상태 및 비정상적인 픽셀 또는 세그먼트 동작을 모니터링할 수 있다. 하드웨어 보호 기능은 열적 또는 전기적 한계를 초과하는 경우 밝기를 낮추거나 고장난 영역을 비활성화하거나 디스플레이를 안전 상태(Safe State)로 전환할 수 있다. 진단 정보는 인지 또는 시스템 컨트롤러에서 사용할 수 있어야 하며, 이를 통해 디스플레이 고장과 소프트웨어 렌더링 문제를 구분할 수 있어야 한다.
+
+기계적 통합(Mechanical Integration)은 진동, 충격, 반복적인 헤드 움직임, 커넥터 고정, 정비성(Serviceability)을 고려해야 한다. 디스플레이 표면과 지지 구조는 휴머노이드가 보행하거나 헤드를 회전시키거나 물체와 상호작용하거나 우발적인 접촉을 경험하는 동안에도 정렬 상태를 유지해야 한다. 움직이는 헤드 디스플레이와 주 전자장치 사이에는 유연 하네스(Flexible Harness)가 필요할 수 있다. 커넥터는 반복적인 움직임에 대해 안정적으로 고정되어야 하며, 디스플레이 모듈은 전체 헤드 어셈블리를 불필요하게 분해하지 않고 교체할 수 있어야 한다.
+
+전자파 적합성(Electromagnetic Compatibility) 역시 중요하다. 얼굴 디스플레이는 카메라, 마이크로폰, 무선 통신 장치, 고속 프로세서 및 모터 관련 전기 시스템과 가까운 위치에서 동작하기 때문이다. 고속 디스플레이 인터페이스와 스위칭 LED 드라이버는 전자파 방사(Electromagnetic Emission)를 발생시킬 수 있으며, 민감한 오디오 및 영상 센서는 인접한 간섭에 영향을 받을 수 있다. 따라서 제어된 케이블 배선, 차폐(Shielding), 접지(Grounding), 필터링 및 잡음이 많은 전원 경로와 민감한 신호 경로의 분리를 헤드 수준 전기전자 아키텍처에 통합해야 한다.
+
+확장 가능한 얼굴 디스플레이 아키텍처(Scalable Face-Display Architecture)는 휴머노이드 헤드 전체를 재설계하지 않고도 다양한 디스플레이 기술과 시각적 디자인을 도입할 수 있어야 한다. 표준화된 전원 인터페이스, 모듈형 통신 링크(Modular Communication Link), 교체 가능한 디스플레이 모듈, 구성 가능한 렌더링 소프트웨어(Configurable Rendering Software), 저장된 보정 또는 구성 데이터를 통해 향후 업그레이드를 지원할 수 있다. 휴머노이드 상호작용이 더욱 정교해짐에 따라 얼굴 디스플레이는 단순한 시각적 표시 장치에서 주의, 감정, 시스템 상태, 사회적 신호(Social Cue), 상호작용 의도(Interaction Intent)를 전달하는 능동적인 체화 인터페이스(Embodiment Interface)로 발전할 수 있으며, 동시에 음성, 인지, 동작 및 체화형 인공지능(Embodied AI) 행동과 동기화된 상태를 유지해야 한다.
+
+## 08.06. Perception Computer
+
+![](images/image6.png){width="7.268055555555556in" height="7.268055555555556in"}
+
+인지 컴퓨터(Perception Computer)는 휴머노이드 헤드와 인지 서브시스템(Perception Subsystem)을 위한 주요 계산 통합 지점(Computational Integration Point)을 구성한다. 카메라 배열(Camera Array), 라이다(LiDAR), 마이크 배열(Microphone Array) 및 기타 헤드 장착 센서에서 데이터를 수신하고, 이러한 데이터 스트림을 처리하여 상위 수준의 로봇 제어 및 인공지능(AI) 시스템에 구조화된 정보를 제공한다. 또한 시각적, 기하학적, 음향적 인지를 조정하여 휴머노이드가 사람, 물체, 움직임 및 주변 공간에 대한 일관된 표현을 유지할 수 있도록 한다.
+
+컴퓨터는 영상 처리(Image Processing), 점군 처리(Point-Cloud Processing), 오디오 처리(Audio Processing), 센서 융합(Sensor Fusion), 위치 추정(Localization), 객체 검출(Object Detection), 추적(Tracking), 실시간 상호작용(Real-Time Interaction)을 포함하는 통합 워크로드에 따라 선정해야 한다. CPU 자원은 범용 처리와 시스템 조정을 담당하며, GPU 또는 AI 가속기(AI Accelerator)는 계산량이 많은 신경망 추론(Neural-Network Inference)과 비전 워크로드를 실행할 수 있다. 여러 고속 센서 스트림을 동시에 버퍼링하고 처리해야 하므로 메모리 용량과 대역폭 역시 중요하다.
+
+인지 컴퓨터는 헤드에 설치된 여러 센서를 연결하기 위한 고속 인터페이스(High-Speed Interface)를 필요로 한다. 카메라 스트림은 전용 고대역폭 링크(High-Bandwidth Link)를 필요로 할 수 있으며, 라이다는 일반적으로 연속적인 점군 데이터를 생성하고 마이크 배열은 동기화된 다중 채널 오디오(Synchronized Multi-Channel Audio)를 생성한다. 센서 요구사항에 따라 이더넷(Ethernet), USB, MIPI 기반 인터페이스 또는 기타 적절한 링크를 조합할 수 있다. 아키텍처는 충분한 대역폭을 유지하고 지연시간과 프로세서 사용률을 증가시키는 불필요한 데이터 복사(Data Copy)를 방지해야 한다.
+
+시간 동기화(Time Synchronization)는 다중 센서 인지(Multi-Sensor Perception)의 기본 요소이다. 카메라 프레임, 라이다 측정값, 마이크 샘플 및 로봇 동작 정보는 정확한 타임스탬프(Timestamp)와 연결되어 서로 다른 위치와 처리 단계에서 획득된 측정값이 동일한 물리적 이벤트와 관련될 수 있도록 해야 한다. 공통 클록(Common Clock)과 적절한 동기화 메커니즘을 사용하면 인지 컴퓨터가 환경에 대한 일관된 표현을 구성할 때 센서 지연시간, 로봇 움직임 및 데이터 획득 차이를 보상할 수 있다.
+
+센서 융합(Sensor Fusion)은 서로 다른 인지 장치에서 제공하는 상호 보완적인 정보를 결합한다. 카메라는 풍부한 외관 및 의미론적 정보(Appearance and Semantic Information)를 제공하고, 라이다는 직접적인 기하학적 측정값을 제공하며, 마이크는 음향 방향 및 이벤트 정보를 제공한다. 인지 컴퓨터는 이러한 측정값을 공통 좌표계(Common Coordinate Frame)로 변환하고 동일한 물리적 객체 또는 이벤트를 설명하는 관측값을 연계할 수 있다. 이러한 융합은 하나의 센싱 방식에만 의존하는 것보다 더욱 견고한 환경 이해(Environmental Understanding)를 제공한다.
+
+인지 파이프라인(Perception Pipeline)은 원시 센서 획득(Raw Sensor Acquisition)과 상위 수준 해석(High-Level Interpretation)을 분리해야 한다. 초기 단계에서는 데이터 검증(Data Validation), 타임스탬프 처리, 보정 보상(Calibration Compensation), 필터링, 동기화 및 형식 변환(Format Conversion)을 수행할 수 있다. 이후 단계에서는 특징 추출(Feature Extraction), 객체 검출, 분할(Segmentation), 추적, 깊이 추정(Depth Estimation), 위치 추정, 장면 해석(Scene Interpretation)을 수행할 수 있다. 이러한 계층적 구성은 전체 인지 아키텍처를 다시 설계하지 않고도 개별 알고리즘이나 센서를 교체할 수 있도록 한다.
+
+지연시간(Latency)과 결정론적 동작(Determinism)은 인지 출력이 로봇의 행동에 영향을 미치기 때문에 중요하다. 지연된 객체 위치, 오래된 사람 위치 정보 또는 최신 상태가 아닌 장애물 측정값은 이미 변화한 물리적 상황에 로봇이 반응하게 만들 수 있다. 따라서 인지 컴퓨터는 움직임이나 상호작용에 직접 영향을 미치는 기능에 대해 제한된 처리 경로(Bounded Processing Path)를 설정해야 한다. 중요하지 않은 워크로드는 비동기 처리(Asynchronous Processing)를 사용할 수 있지만, 시간에 민감한 인지 기능은 예측 가능한 스케줄링과 자원 할당을 제공받아야 한다.
+
+인지 컴퓨터는 지속적인 센서 워크로드를 처리하면서 안정적으로 동작해야 한다. 따라서 특히 GPU 또는 AI 가속기를 사용하는 경우 열 관리(Thermal Management)는 헤드 수준 아키텍처의 중요한 요소가 된다. 프로세서, 메모리, 저장장치 및 인터페이스 전자장치에서 발생하는 열은 적절한 열 경로(Thermal Path)를 통해 전달되어야 하며, 카메라, 라이다, 마이크 또는 디스플레이 부품의 온도를 과도하게 상승시키지 않아야 한다. 온도 모니터링과 제어된 성능 저하(Controlled Performance Reduction)는 지속적인 계산 부하에서 시스템을 보호할 수 있다.
+
+전기적 전원 품질(Power Quality) 역시 인지 신뢰성에 영향을 미친다. 인지 컴퓨터는 고속 센서, 디스플레이, 통신 장치 및 오디오 전자장치와 동일한 헤드 전원 도메인을 공유할 수 있으며, 전체 휴머노이드에는 전기적 교란을 발생시키는 모터와 스위칭 전력 변환기(Switching Power Converter)가 존재한다. 적절한 전원 조정(Regulation), 필터링, 접지, 전원 도메인 분리(Power-Domain Separation), 전류 모니터링(Current Monitoring)을 통해 전기적 잡음이나 과도 현상이 인지 처리를 중단시키거나 센서 통신을 손상시킬 가능성을 줄일 수 있다.
+
+인지 컴퓨터는 계산 기능과 연결된 센서 모두를 위한 하드웨어 및 소프트웨어 진단(Hardware and Software Diagnostics)을 제공해야 한다. 유용한 정보에는 프로세서 온도, 메모리 사용량, 가속기 부하(Accelerator Load), 저장장치 상태, 인터페이스 오류, 프레임 누락(Dropped Frame), 패킷 손실(Packet Loss), 센서 가용성, 동기화 상태 및 처리 지연시간이 포함된다. 시스템 수준의 진단과 센서 수준의 상태 정보를 연계하면 휴머노이드는 센서 고장과 통신 문제, 계산 과부하, 열적 제한 또는 소프트웨어 오작동을 구분할 수 있다.
+
+인지 컴퓨터는 여러 센서와 상위 수준의 로봇 기능을 연결하기 때문에 보안(Security)과 소프트웨어 무결성(Software Integrity)이 중요해진다. 센서 데이터에 대한 접근 제어(Controlled Access), 인증된 소프트웨어(Authenticated Software), 보호된 구성 정보(Protected Configuration), 보안 부팅(Secure Boot) 메커니즘 및 통제된 업데이트 절차(Controlled Update Procedure)를 통해 비인가된 변경의 위험을 줄일 수 있다. 특히 인지 출력이 사람 주변에서의 물리적 움직임에 영향을 미칠 수 있는 경우에는 안전 관련 처리(Safety-Relevant Processing)와 비중요 애플리케이션(Non-Critical Application)을 적절하게 분리해야 한다.
+
+인지 컴퓨터는 헤드 수준 센싱과 전체 휴머노이드 컴퓨팅 아키텍처 사이의 중요한 경계(Boundary)를 제공한다. 인지 컴퓨터의 출력은 로봇 통신 아키텍처를 통해 상위 수준 AI 컴퓨터, 실시간 컨트롤러(Real-Time Controller), 내비게이션 모듈(Navigation Module), 상호작용 시스템(Interaction System), 체화형 인공지능(Embodied AI) 소프트웨어로 전달될 수 있다. 이러한 분리를 통해 헤드 서브시스템은 센서 정보의 획득과 해석에 집중하고, 이후의 컴퓨팅 계층에서는 보다 광범위한 계획, 추론, 학습 및 행동 생성을 수행할 수 있다.
+
+모듈형 인지 컴퓨터 아키텍처(Modular Perception Computer Architecture)는 센서 해상도와 AI 모델의 요구사항이 증가함에 따라 처리 성능을 발전시킬 수 있어야 한다. 표준화된 인터페이스, 교체 가능한 컴퓨팅 모듈(Replaceable Compute Module), 구성 가능한 소프트웨어 파이프라인(Configurable Software Pipeline), 확장 가능한 메모리 및 저장장치, 하드웨어 가속 지원을 통해 향후 업그레이드를 단순화할 수 있다. 따라서 아키텍처는 카메라, 라이다, 마이크, 스피커 및 얼굴 디스플레이 서브시스템을 근본적으로 변경하지 않고도 추가적인 인지 알고리즘을 수용할 수 있는 충분한 성능 여유(Performance Margin)를 제공해야 한다.
+
+시스템 수준에서 인지 컴퓨터는 휴머노이드 헤드의 물리적 센싱 하드웨어와 로봇의 상위 수준 지능 사이를 연결하는 계산적 브리지(Computational Bridge) 역할을 한다. 그 효과는 단순한 프로세서 성능뿐만 아니라 대역폭, 동기화, 보정, 열 설계, 전원 무결성(Power Integrity), 진단, 보안 및 소프트웨어 아키텍처의 통합에 의해 결정된다. 이러한 요소가 적절하게 통합되면 인지 컴퓨터는 서로 다른 센서 스트림을 적시에 일관된 정보로 변환하여 신뢰성 있는 상호작용, 환경 이해 및 체화형 인공지능 동작을 지원할 수 있다.
